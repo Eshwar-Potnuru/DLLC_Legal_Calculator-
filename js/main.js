@@ -491,7 +491,17 @@ function setupMobileNavigation() {
         }
 
         const target = event.target.closest('.nav-link, .nav-dropdown-item');
-        if (target) {
+        if (!target) {
+            return;
+        }
+
+        const isDropdownToggle = target.classList.contains('nav-dropdown-toggle');
+        if (isDropdownToggle) {
+            // Keep the mobile menu open while users interact with dropdown toggles.
+            return;
+        }
+
+        if (target.classList.contains('nav-dropdown-item') || target.classList.contains('nav-link')) {
             setOpen(false);
         }
     });
