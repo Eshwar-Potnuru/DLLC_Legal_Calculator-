@@ -1021,8 +1021,9 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
     handleInputResize() {
         const textarea = this.elements.input;
         if (!textarea) return;
-        textarea.style.height = 'auto';
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 180)}px`;
+        const stableHeight = window.matchMedia('(max-width: 768px)').matches ? 44 : 52;
+        textarea.style.height = `${stableHeight}px`;
+        textarea.style.overflowY = textarea.scrollHeight > stableHeight ? 'auto' : 'hidden';
     }
 
     setBusy(isBusy) {
