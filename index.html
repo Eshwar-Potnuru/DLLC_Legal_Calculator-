@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLLC Singapore Calculators | Legal Coverage & Legal Fee Estimation</title>
+    <meta name="description" content="Official DLLC Singapore calculators. Choose between accident legal coverage assessment and legal fee estimation with a professional guided experience.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body class="page-load">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>DLLC Singapore</span>
+                </div>
+                <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu" aria-controls="primaryNavigation" aria-expanded="false">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                    <i class="fas fa-xmark" aria-hidden="true"></i>
+                </button>
+                <nav class="nav" id="primaryNavigation">
+                    <div class="nav-dropdown" id="calculatorsDropdown">
+                        <button type="button" class="nav-link nav-dropdown-toggle" id="calculatorsDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="calculatorsDropdownMenu">
+                            Calculators
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="nav-dropdown-menu" id="calculatorsDropdownMenu" role="menu" aria-label="Calculator options">
+                            <button type="button" class="nav-dropdown-item" onclick="openCalculator()" role="menuitem">
+                                <i class="fas fa-layer-group"></i>
+                                Choose Calculator
+                            </button>
+                            <button type="button" class="nav-dropdown-item" onclick="openCoverageCalculator()" role="menuitem">
+                                <i class="fas fa-shield-heart"></i>
+                                Accident Legal Coverage
+                            </button>
+                            <button type="button" class="nav-dropdown-item" onclick="openFeeCalculator()" role="menuitem">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                Legal Fee Calculator
+                            </button>
+                        </div>
+                    </div>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="calculator" class="hero">
+        <div class="container">
+            <div class="hero-content slide-in-left">
+                <h1 class="hero-title">
+                    Professional Legal Calculators
+                    <span class="highlight">for Singapore</span>
+                </h1>
+                <p class="hero-description fade-in-on-scroll">
+                    Choose the right calculator for your legal needs, from accident coverage assessment to legal fee estimation, 
+                    with our AI-enhanced professional system.
+                    Trusted by legal professionals across Singapore.
+                </p>
+                <div class="hero-actions scale-in">
+                    <button class="btn-primary interactive-element" onclick="openCalculator()">
+                        <i class="fas fa-calculator"></i>
+                        Open Calculators
+                    </button>
+                    <button class="btn-secondary interactive-element" onclick="openAIChat()">
+                        <i class="fas fa-robot"></i>
+                        AI Assistant
+                    </button>
+                    <button class="btn-secondary interactive-element" onclick="scrollToSection('about')">
+                        <i class="fas fa-info-circle"></i>
+                        Learn More
+                    </button>
+                </div>
+            </div>
+            <div class="hero-image slide-in-right">
+                <div class="hero-card float-animation">
+                    <div class="card-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Legal Protection</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Success Rate</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">S$25K</span>
+                            <span class="stat-label">Avg Recovery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Dashboard -->
+    <section class="calculator-dashboard" aria-label="Calculator dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2>Calculator Dashboard</h2>
+                <p>Pick the exact calculator you need, or open the selector to compare both options.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <article class="dashboard-card dashboard-card-coverage">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-shield-heart"></i>
+                    </div>
+                    <h3>Accident Legal Coverage Calculator</h3>
+                    <p>Best for personal injury and accident claim assessments, with guided details and result breakdown.</p>
+                    <button type="button" class="btn-primary" onclick="openCoverageCalculator()">
+                        <i class="fas fa-arrow-right"></i>
+                        Use Coverage Calculator
+                    </button>
+                </article>
+
+                <article class="dashboard-card dashboard-card-fee">
+                    <div class="dashboard-card-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h3>Legal Fee Calculator</h3>
+                    <p>Best for property and transaction fee estimation, including GST, ownership rules, and vouchers.</p>
+                    <button type="button" class="btn-secondary" onclick="openFeeCalculator()">
+                        <i class="fas fa-arrow-right"></i>
+                        Use Fee Calculator
+                    </button>
+                </article>
+            </div>
+
+            <div class="dashboard-actions">
+                <button type="button" class="btn-secondary" onclick="openCalculator()">
+                    <i class="fas fa-layer-group"></i>
+                    Open Calculator Selector
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Selector Modal -->
+    <div class="modal-overlay" id="calculatorSelectorModal" aria-hidden="true">
+        <div class="modal-container selector-modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-layer-group"></i>
+                    Choose A Calculator
+                </h2>
+                <button class="modal-close" onclick="closeCalculatorSelector()" title="Close calculator selector" aria-label="Close calculator selector">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="selector-subtitle">Select the tool you want to use.</p>
+                <div class="selector-grid">
+                    <article class="selector-card">
+                        <div class="selector-icon accident">
+                            <i class="fas fa-shield-heart"></i>
+                        </div>
+                        <h3>Accident Legal Coverage Calculator</h3>
+                        <p>Estimate legal coverage for personal injury and accident claims with guided steps and AI support.</p>
+                        <button type="button" class="btn-primary" onclick="openCoverageCalculator()">
+                            <i class="fas fa-arrow-right"></i>
+                            Open Coverage Calculator
+                        </button>
+                    </article>
+
+                    <article class="selector-card">
+                        <div class="selector-icon fee">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3>Legal Fee Calculator</h3>
+                        <p>Estimate conveyancing and transaction legal fees with ownership logic, GST, and voucher support.</p>
+                        <button type="button" class="btn-secondary" onclick="openFeeCalculator()">
+                            <i class="fas fa-arrow-right"></i>
+                            Open Fee Calculator
+                        </button>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculator Modal -->
+    <div class="modal-overlay" id="calculatorModal" aria-hidden="true">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-calculator"></i>
+                    Legal Coverage Assessment
+                </h2>
+                <button class="modal-close" onclick="closeCalculator()" title="Close calculator" aria-label="Close calculator">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Progress Indicator -->
+                <div class="progress-indicator">
+                    <div class="progress-step active" data-step="1">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Personal Info</span>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Accident Details</span>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <span class="step-number">3</span>
+                        <span class="step-label">AI Analysis</span>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <span class="step-number">4</span>
+                        <span class="step-label">Results</span>
+                    </div>
+                </div>
+
+                <!-- Form Container -->
+                <form id="legalCalculatorForm" class="calculator-form">
+                    <!-- Step 1: Personal Information -->
+                    <div class="form-step active" data-step="1">
+                        <div class="step-header">
+                            <h3>Personal Information</h3>
+                            <p>Please provide your contact details for the assessment</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName" class="form-label">Full Name *</label>
+                                <input type="text" id="fullName" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" id="email" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone Number *</label>
+                                <div class="input-group">
+                                    <span class="input-prefix">+65</span>
+                                    <input type="tel" id="phone" class="form-input" pattern="[0-9]{8}" placeholder="8XXX XXXX" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Accident Details -->
+                    <div class="form-step" data-step="2">
+                        <div class="step-header">
+                            <h3>Accident Information</h3>
+                            <p>Tell us about the incident that occurred</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="accidentDate" class="form-label">Date of Accident *</label>
+                                <input type="date" id="accidentDate" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="accidentType" class="form-label">Type of Accident *</label>
+                                <select id="accidentType" class="form-select" required>
+                                    <option value="">Select accident type</option>
+                                    <option value="motor-vehicle">Motor Vehicle Accident</option>
+                                    <option value="workplace">Workplace Accident</option>
+                                    <option value="public-area">Public Area Accident</option>
+                                    <option value="medical-negligence">Medical Negligence</option>
+                                    <option value="product-liability">Product Liability</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="faultPercentage" class="form-label">Fault Determination *</label>
+                                <select id="faultPercentage" class="form-select" required>
+                                    <option value="">Who was at fault?</option>
+                                    <option value="0">Other party fully at fault (0% my fault)</option>
+                                    <option value="25">Mostly other party (25% my fault)</option>
+                                    <option value="50">Shared responsibility (50% my fault)</option>
+                                    <option value="75">Mostly my fault (75% my fault)</option>
+                                    <option value="100">I was fully at fault (100% my fault)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="claimAmount" class="form-label">Estimated Claim Amount (SGD) *</label>
+                                <div class="input-group">
+                                    <span class="input-prefix">S$</span>
+                                    <input type="number" id="claimAmount" class="form-input" min="1000" step="100" placeholder="25,000" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Injury Type Selection -->
+                        <div class="injury-section">
+                            <h4>Type of Injury</h4>
+                            <div class="injury-grid" id="injuryGrid">
+                                <!-- Injury types will be populated by JavaScript -->
+                            </div>
+                            <input type="hidden" id="selectedInjury" required>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: AI Document Analysis -->
+                    <div class="form-step" data-step="3">
+                        <div class="step-header">
+                            <h3>AI Document Analysis</h3>
+                            <p>Upload documents for intelligent analysis and enhanced accuracy</p>
+                        </div>
+                        
+                        <div class="ai-section">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>Drop files here or click to browse</h4>
+                                    <p>Supported: PDF, DOCX, TXT, JPG, PNG (Max 10MB each)</p>
+                                    <input type="file" id="documentUpload" multiple accept=".pdf,.docx,.txt,.jpg,.jpeg,.png" hidden>
+                                    <button type="button" class="btn-secondary" onclick="document.getElementById('documentUpload').click()">
+                                        Choose Files
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="uploaded-files" id="uploadedFiles"></div>
+                            
+                            <div class="ai-query">
+                                <label for="aiQuery" class="form-label">Ask AI Assistant</label>
+                                <textarea id="aiQuery" class="form-textarea" rows="3" placeholder="Ask specific questions about your case, injury details, fault determination, or any legal queries..."></textarea>
+                                <button type="button" class="btn-primary" id="analyzeButton" disabled>
+                                    <i class="fas fa-brain"></i>
+                                    Analyze with AI
+                                </button>
+                            </div>
+                            
+                            <div class="ai-results" id="aiResults">
+                                <!-- AI results will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Results -->
+                    <div class="form-step" data-step="4">
+                        <div class="step-header">
+                            <h3>Assessment Results</h3>
+                            <p>Your personalized legal coverage calculation</p>
+                        </div>
+                        
+                        <div class="results-container" id="resultsContainer">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Form Navigation -->
+                <div class="form-navigation">
+                    <button type="button" class="btn-secondary" id="prevBtn" onclick="previousStep()">
+                        <i class="fas fa-arrow-left"></i>
+                        Previous
+                    </button>
+                    <button type="button" class="btn-primary" id="nextBtn" onclick="nextStep()">
+                        Next
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <i class="fas fa-calculator"></i>
+                        Calculate Coverage
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Fee Calculator Modal -->
+    <div class="modal-overlay" id="feeCalculatorModal" aria-hidden="true">
+        <div class="modal-container fee-modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Legal Fee Estimator
+                </h2>
+                <button class="modal-close" onclick="closeFeeCalculator()" title="Close legal fee calculator" aria-label="Close legal fee calculator">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="feeEstimatorForm" class="calculator-form fee-calculator-form" novalidate>
+                    <div class="step-header">
+                        <h3>Legal Fee Estimate</h3>
+                        <p>Fill in your property transaction details to get an instant fee estimate.</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="feeName" class="form-label">Full Name *</label>
+                            <input type="text" id="feeName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="feeEmail" class="form-label">Email Address *</label>
+                            <input type="email" id="feeEmail" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="feePhone" class="form-label">Phone Number *</label>
+                            <div class="input-group">
+                                <span class="input-prefix">+65</span>
+                                <input type="tel" id="feePhone" class="form-input" pattern="[0-9]{8}" placeholder="8XXX XXXX" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="feePurpose" class="form-label">Transaction Type *</label>
+                            <select id="feePurpose" class="form-select" required>
+                                <option value="">Select an option</option>
+                                <option value="Buy">Buy</option>
+                                <option value="Sell">Sell</option>
+                                <option value="Mortgage">Mortgage</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="feePropertyType" class="form-label">Property Type *</label>
+                            <select id="feePropertyType" class="form-select" required>
+                                <option value="">Select an option</option>
+                                <option value="HDB">HDB</option>
+                                <option value="Private">Private</option>
+                                <option value="Commercial">Commercial</option>
+                            </select>
+                        </div>
+                        <div class="form-group is-hidden" id="feePaymentTypeOptions">
+                            <label for="feePaymentType" class="form-label">Payment Method *</label>
+                            <select id="feePaymentType" class="form-select" required>
+                                <option value="">Select payment method</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="feeOwnership" class="form-label">Ownership Type *</label>
+                            <select id="feeOwnership" class="form-select" required>
+                                <option value="">Select an option</option>
+                                <option value="Single">Single Owner</option>
+                                <option value="Joint">Joint Owners</option>
+                            </select>
+                        </div>
+                        <div class="form-group is-hidden" id="feeSingleOwnerOptions">
+                            <label for="feeSingleOwnerType" class="form-label">Owner Type *</label>
+                            <select id="feeSingleOwnerType" class="form-select">
+                                <option value="">Select an option</option>
+                                <option value="Individual">Individual</option>
+                                <option value="Company">Company</option>
+                            </select>
+                        </div>
+                        <div class="form-group is-hidden" id="feeCompanyNameField">
+                            <label for="feeCompanyName" class="form-label">Company Name *</label>
+                            <input type="text" id="feeCompanyName" class="form-input" placeholder="Enter company name">
+                        </div>
+                        <div class="form-group is-hidden" id="feeJointOwnerOptions">
+                            <label for="feeJointOwnerType" class="form-label">Joint Owner Type *</label>
+                            <select id="feeJointOwnerType" class="form-select">
+                                <option value="">Select an option</option>
+                                <option value="Husband &amp; Wife">Husband &amp; Wife</option>
+                                <option value="Two Individuals">Two Individuals</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="feeBank" class="form-label">Bank *</label>
+                            <select id="feeBank" class="form-select" required>
+                                <option value="">Select an option</option>
+                                <option value="DBS">DBS</option>
+                                <option value="OCBC">OCBC</option>
+                                <option value="UOB">UOB</option>
+                                <option value="Other">Other Bank</option>
+                            </select>
+                        </div>
+                        <div class="form-group is-hidden" id="feeCustomBankField">
+                            <label for="feeCustomBankName" class="form-label">Bank Name *</label>
+                            <input type="text" id="feeCustomBankName" class="form-input" placeholder="Enter bank name">
+                        </div>
+                        <div class="form-group">
+                            <label for="feeTransactionValue" class="form-label">Transaction Value (SGD) *</label>
+                            <div class="input-group">
+                                <span class="input-prefix">S$</span>
+                                <input type="number" id="feeTransactionValue" class="form-input" min="1" step="1" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fee-promo-panel">
+                        <h4>Promotions</h4>
+                        <p class="promo-banner">Use code <strong>WELCOME15</strong> for a first-use discount.</p>
+                        <div class="promo-row">
+                            <input type="text" id="feeVoucherCode" class="form-input" placeholder="Enter voucher code">
+                            <button type="button" class="btn-secondary" id="feeApplyVoucher">Apply</button>
+                        </div>
+                        <p class="voucher-message" id="feeVoucherMessage"></p>
+                        <p class="voucher-preview is-hidden" id="feeVoucherPreview"></p>
+                        <input type="hidden" id="feeValidVoucher" value="">
+                    </div>
+
+                    <div class="form-navigation">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-calculator"></i>
+                            Calculate Fees
+                        </button>
+                    </div>
+                </form>
+
+                <div id="feeResultPanel" class="fee-result-panel is-hidden">
+                    <div class="step-header">
+                        <h3>Fee Estimation Summary</h3>
+                        <p>Instant estimate based on your transaction profile.</p>
+                    </div>
+
+                    <div class="results-summary">
+                        <div class="result-card primary">
+                            <div class="result-header">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                <h4>Estimated Legal Fee</h4>
+                            </div>
+                            <div class="result-amount" id="feeSummaryFinalFee">S$0.00</div>
+                            <div class="result-details">
+                                <small>Includes 9% GST</small>
+                            </div>
+                        </div>
+                        <div class="result-card info">
+                            <div class="result-header">
+                                <i class="fas fa-ticket-alt"></i>
+                                <h4>Discount Applied</h4>
+                            </div>
+                            <div class="result-amount" id="feeSummaryDiscount">S$0.00</div>
+                            <div class="result-details">
+                                <small>Voucher savings</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="case-summary">
+                        <h4>Summary Details</h4>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <label>Client Name</label>
+                                <span id="feeSummaryName"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Email</label>
+                                <span id="feeSummaryEmail"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Phone</label>
+                                <span id="feeSummaryPhone"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Transaction</label>
+                                <span id="feeSummaryPurpose"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Property Type</label>
+                                <span id="feeSummaryPropertyType"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Ownership</label>
+                                <span id="feeSummaryOwnership"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Payment Method</label>
+                                <span id="feeSummaryPaymentType"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Bank</label>
+                                <span id="feeSummaryBank"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Transaction Value</label>
+                                <span id="feeSummaryTransactionValue"></span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Estimated On</label>
+                                <span id="feeSummaryDateTime"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn-secondary" id="feeBackToForm">
+                            <i class="fas fa-arrow-left"></i>
+                            Edit Details
+                        </button>
+                        <button type="button" class="btn-primary" id="feeContactLegalTeamButton">
+                            <i class="fas fa-paper-plane"></i>
+                            Contact Legal Team
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Professional Legal Assessment</h2>
+                <p>Trusted by legal professionals across Singapore for accurate coverage calculations</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Advanced document analysis using cutting-edge AI technology for precise assessments</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Singapore Law Compliant</h3>
+                    <p>Calculations based on current Singapore legal regulations and precedents</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Confidential</h3>
+                    <p>Your data is protected with enterprise-grade security and confidentiality</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Get Professional Legal Assistance</h2>
+                    <p>Need expert legal guidance? Contact our experienced team for personalized consultation.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>eshwarpotnuru35@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+65 8058 5329</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Singapore</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" name="name" class="form-input" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" class="form-input" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" class="form-textarea" rows="4" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="logo">
+                        <i class="fas fa-balance-scale"></i>
+                        <span>DLLC Singapore</span>
+                    </div>
+                    <p>Professional legal calculators for Singapore accident coverage and legal fee estimation.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Disclaimer</a>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Support</h4>
+                        <a href="#">Help Center</a>
+                        <a href="#">Contact Us</a>
+                        <a href="#">FAQ</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Eshwar Potnuru. All rights reserved. Professional legal assessment tool.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chat Modal -->
+    <div class="modal-overlay" id="aiChatModal" aria-hidden="true">
+        <div class="chat-modal-container" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
+            <aside class="chat-sidebar" id="aiChatSidebar">
+                <div class="chat-sidebar-header">
+                    <h3 id="aiChatTitle">Case Files</h3>
+                    <p>Upload supporting documents for instant AI analysis.</p>
+                    <button type="button" class="btn-secondary" id="aiChatUploadButton">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload Files
+                    </button>
+                    <input type="file" id="aiChatFileInput" class="visually-hidden" multiple accept=".pdf,.docx,.txt,.jpg,.jpeg,.png">
+                </div>
+                <div class="chat-dropzone" id="aiChatUploadZone">
+                    <i class="fas fa-file-import"></i>
+                    <p>Drag &amp; drop PDF, DOCX, TXT, or image files</p>
+                    <span>Maximum 10MB per file</span>
+                </div>
+                <div class="chat-document-list" id="aiChatDocumentList" aria-live="polite"></div>
+            </aside>
+            <div class="chat-main">
+                <div class="chat-header">
+                    <div class="chat-title">
+                        <span class="chat-avatar">
+                            <i class="fas fa-robot"></i>
+                        </span>
+                        <div>
+                            <h3>AI Legal Assistant</h3>
+                            <p>Specialist in Singapore accident claims</p>
+                        </div>
+                    </div>
+                    <button class="icon-button" type="button" id="aiChatCloseButton" aria-label="Close AI assistant">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="chat-messages" id="aiChatMessages" tabindex="0" aria-live="polite"></div>
+                <div class="chat-quick-actions" id="aiChatQuickActions">
+                    <button type="button" class="chip-action" data-action="guide">
+                        <i class="fas fa-lightbulb"></i>
+                        How does this work?
+                    </button>
+                    <button type="button" class="chip-action" data-action="upload">
+                        <i class="fas fa-file-upload"></i>
+                        Upload another document
+                    </button>
+                    <button type="button" class="chip-action" data-action="suggest">
+                        <i class="fas fa-comments"></i>
+                        Suggested questions
+                    </button>
+                </div>
+                <div class="chat-input-bar">
+                    <textarea id="aiChatInput" placeholder="Describe your accident or ask a question…" rows="1"></textarea>
+                    <div class="chat-actions">
+                        <button type="button" class="icon-button" id="aiChatAttachButton" aria-label="Attach document">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button type="button" class="btn-primary" id="aiChatSendButton">
+                            <span>Send</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Processing your assessment...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script>console.log('🏠 HTML page loaded successfully');</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/legal-fee-calculator.js"></script>
+    <script src="js/ui-manager.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js" referrerpolicy="no-referrer"></script>
+    <script>
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" referrerpolicy="no-referrer"></script>
+    <script src="js/ai-assistant.js"></script>
+</body>
+</html>

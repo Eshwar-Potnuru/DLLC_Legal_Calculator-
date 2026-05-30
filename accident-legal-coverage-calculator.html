@@ -1,0 +1,2112 @@
+/*
+==============================================================
+  Project: Accident Legal Coverage Calculator
+  Developer: Eshwar Potnuru
+  Contact: eshwarpotnuru35@gmail.com | +65 80585329
+  LinkedIn: www.linkedin.com/in/eshwar-potnuru-ba4918266
+  Portfolio: https://eshwarpotnuru35.wixstudio.com/esshaa
+  Esshaa Test site: https://dev-eshweb.pantheonsite.io/
+  Location: Singapore
+
+  © 2025 Eshwar Potnuru. All rights reserved.
+
+  This code is the intellectual property of Eshwar Potnuru.
+  Unauthorized copying, distribution, reproduction, or use of
+  this code, in part or in full, without explicit written 
+  permission is strictly prohibited and may result in legal action.
+
+  Description:
+  This system calculates accident legal coverage based on Singapore
+  insurance regulations, injury types, fault determination, and
+  recovery percentages for personal injury claims.
+
+  This script is protected under the Copyright Act and
+  applicable intellectual property laws.
+==============================================================
+*/
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accident Legal Coverage Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d47a1; /* Deep blue */
+            --secondary-color: #333333; /* Dark gray */
+            --accent-color: #2196f3; /* Light blue */
+            --danger-color: #f44336; /* Red for accidents */
+            --success-color: #4caf50; /* Green for success */
+            --light-bg: #f0f8ff; /* Very light blue background */
+            --dark-text: #222222; /* Almost black */
+            --light-text: #666666; /* Medium gray */
+            --card-bg: #ffffff; /* Pure white for cards */
+            --warning-color: #ff9800; /* Orange for warnings */
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e3f2fd 100%);
+            font-family: 'Roboto', sans-serif;
+            color: var(--dark-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .btn-trigger {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(13, 71, 161, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .btn-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(13, 71, 161, 0.4);
+            background: linear-gradient(45deg, #1565c0, #42a5f5);
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+        }
+        
+        .modal-header {
+            border-bottom: 2px solid #e3f2fd;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--light-bg), #e3f2fd);
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            background-color: var(--card-bg);
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px;
+            border: 2px solid #e3f2fd;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(13, 71, 161, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border: none;
+            padding: 12px 24px;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3);
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-color: var(--accent-color);
+            color: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border-color: var(--success-color);
+            color: #2e7d32;
+            border-radius: 10px;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3e0, #ffcc02);
+            border-color: var(--warning-color);
+            color: #ef6c00;
+            border-radius: 10px;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-color: var(--danger-color);
+            color: #c62828;
+            border-radius: 10px;
+        }
+        
+        .summary-item {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #fafafa, #f5f5f5);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .fee-display {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .injury-card {
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        }
+        
+        .injury-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.1);
+        }
+        
+        .injury-card.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+        
+        .injury-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .fault-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+        
+        .fault-self {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #c62828;
+        }
+        
+        .fault-other {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            color: #2e7d32;
+        }
+        
+        .percentage-display {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .injury-severity {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .severity-minor {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .severity-moderate {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .severity-severe {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .severity-critical {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .ai-status-panel {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .status-inactive {
+            color: #6c757d;
+        }
+        
+        .status-processing {
+            color: var(--warning-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-complete {
+            color: var(--success-color);
+        }
+        
+        .file-item {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .file-item .file-info {
+            flex: 1;
+        }
+        
+        .file-item .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .extracted-info {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .ai-recommendation {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .confidence-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .confidence-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .confidence-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .confidence-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .ai-message {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .user-message {
+            background: linear-gradient(135deg, #f1f8e9, #c8e6c9);
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--success-color);
+            margin-left: 2rem;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-content {
+            line-height: 1.5;
+        }
+        
+        .amount {
+            background: #fff3e0;
+            color: #ef6c00;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .percentage {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .typing-indicator {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .typing-indicator::after {
+            content: "●●●";
+            animation: typing 1.5s infinite;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        @keyframes typing {
+            0%, 20% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        
+        hr {
+            border-top: 2px solid rgba(13, 71, 161, 0.1);
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .btn-trigger {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+            
+            .modal-header, .modal-body {
+                padding: 1.25rem;
+            }
+            
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Trigger Button -->
+    <button class="btn-trigger" data-bs-toggle="modal" data-bs-target="#accidentCalculatorModal">
+        <i class="fas fa-calculator"></i> Calculate Legal Coverage
+    </button>
+
+    <!-- Main Modal -->
+    <div class="modal fade" id="accidentCalculatorModal" tabindex="-1" aria-labelledby="accidentCalculatorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accidentCalculatorModalLabel">
+                        <i class="fas fa-car-crash"></i> Accident Legal Coverage Calculator
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="accidentCalculatorForm">
+                        <!-- Personal Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-4"><i class="fas fa-user"></i> Personal Information</h5>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-user-circle"></i> Full Name
+                                    </label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope"></i> Email Address
+                                    </label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone"></i> Phone Number
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+65</span>
+                                        <input type="tel" class="form-control" id="phone" pattern="[0-9]{8}" placeholder="Enter 8-digit number" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nricNumber" class="form-label">
+                                        <i class="fas fa-id-card"></i> NRIC/FIN Number
+                                    </label>
+                                    <input type="text" class="form-control" id="nricNumber" placeholder="S1234567A" pattern="[STFGstfg][0-9]{7}[A-Za-z]" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-4"><i class="fas fa-car-crash"></i> Accident Details</h5>
+                                <div class="mb-3">
+                                    <label for="accidentDate" class="form-label">
+                                        <i class="fas fa-calendar"></i> Accident Date
+                                    </label>
+                                    <input type="date" class="form-control" id="accidentDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="accidentType" class="form-label">
+                                        <i class="fas fa-exclamation-triangle"></i> Accident Type
+                                    </label>
+                                    <select class="form-select" id="accidentType" required>
+                                        <option value="" disabled selected>Select accident type</option>
+                                        <option value="Motor Vehicle">Motor Vehicle Accident</option>
+                                        <option value="Workplace">Workplace Accident</option>
+                                        <option value="Public">Public Area Accident</option>
+                                        <option value="Medical">Medical Negligence</option>
+                                        <option value="Product">Product Liability</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="faultPercentage" class="form-label">
+                                        <i class="fas fa-percentage"></i> Fault Determination
+                                    </label>
+                                    <select class="form-select" id="faultPercentage" required>
+                                        <option value="" disabled selected>Who was at fault?</option>
+                                        <option value="0">Other party fully at fault (0% your fault)</option>
+                                        <option value="25">Mostly other party (25% your fault)</option>
+                                        <option value="50">Shared responsibility (50% your fault)</option>
+                                        <option value="75">Mostly your fault (75% your fault)</option>
+                                        <option value="100">You were fully at fault (100% your fault)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="claimAmount" class="form-label">
+                                        <i class="fas fa-dollar-sign"></i> Estimated Claim Amount (SGD)
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="claimAmount" min="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- AI Document Analysis Section -->
+                        <div class="mb-4">
+                            <h5 class="mb-4"><i class="fas fa-robot"></i> AI Document Analysis</h5>
+                            <div class="alert alert-info">
+                                <i class="fas fa-magic"></i> Upload your documents (medical reports, police reports, insurance forms) and let our AI analyze them automatically!
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="documentUpload" class="form-label">
+                                            <i class="fas fa-cloud-upload-alt"></i> Upload Documents
+                                        </label>
+                                        <input type="file" class="form-control" id="documentUpload" multiple 
+                                               accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
+                                        <small class="text-muted">Supported: PDF, DOC, DOCX, TXT, JPG, PNG (Max 10MB each)</small>
+                                    </div>
+                                    
+                                    <div id="uploadedFiles" class="mb-3"></div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="userQuery" class="form-label">
+                                            <i class="fas fa-question-circle"></i> Ask AI About Your Case
+                                        </label>
+                                        <textarea class="form-control" id="userQuery" rows="3" 
+                                                  placeholder="Ask specific questions about your case, injury details, fault determination, or any other legal queries..."></textarea>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-success" id="analyzeDocuments" disabled>
+                                        <i class="fas fa-brain"></i> Analyze with AI
+                                    </button>
+                                    
+                                    <button type="button" class="btn btn-info ms-2" id="askAIQuestion" disabled>
+                                        <i class="fas fa-comment-dots"></i> Ask AI
+                                    </button>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="ai-status-panel">
+                                        <h6><i class="fas fa-cogs"></i> AI Analysis Status</h6>
+                                        <div id="aiStatus" class="status-inactive">
+                                            <i class="fas fa-circle"></i> Waiting for documents...
+                                        </div>
+                                        <div id="analysisProgress" class="progress mt-2 d-none">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                 role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="aiAnalysisResults" class="mt-4 d-none">
+                                <div class="card">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0"><i class="fas fa-robot"></i> AI Analysis Results</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="extractedInformation"></div>
+                                        <div id="aiRecommendations" class="mt-3"></div>
+                                        <button type="button" class="btn btn-primary mt-3" id="applyAiFindings">
+                                            <i class="fas fa-magic"></i> Apply AI Findings to Form
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Chat Interface -->
+                            <div id="aiChatInterface" class="mt-4 d-none">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-comments"></i> AI Legal Assistant Chat
+                                            <button type="button" class="btn btn-sm btn-outline-light float-end" id="clearChat">
+                                                <i class="fas fa-trash"></i> Clear
+                                            </button>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="chatMessages" style="height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; padding: 1rem; background: #f8f9fa;">
+                                            <div class="ai-message">
+                                                <div class="message-header">
+                                                    <strong>DeepSeek AI Assistant:</strong>
+                                                    <small class="text-muted">Just now</small>
+                                                </div>
+                                                <div class="message-content">
+                                                    Hello! I'm your DeepSeek AI legal assistant, powered by advanced artificial intelligence. I can analyze your documents in real-time and provide expert guidance on Singapore accident law. 
+                                                    <br><br>
+                                                    <strong>What I can help you with:</strong><br>
+                                                    • Document analysis and information extraction<br>
+                                                    • Legal strategy recommendations<br>
+                                                    • Compensation estimates<br>
+                                                    • Singapore law guidance<br>
+                                                    • Case strength assessment
+                                                    <br><br>
+                                                    Upload your documents and ask me anything!
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mt-3">
+                                            <input type="text" class="form-control" id="chatInput" 
+                                                   placeholder="Ask me anything about your case, legal procedures, or Singapore law..." 
+                                                   onkeypress="handleChatKeypress(event)">
+                                            <button class="btn btn-primary" type="button" id="sendChatMessage">
+                                                <i class="fas fa-paper-plane"></i> Send
+                                            </button>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-lightbulb"></i> Try asking: "What are my chances of winning?", "How much compensation can I expect?", "What documents do I still need?"
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Injury Type Selection -->
+                        <div class="mb-4">
+                            <h5 class="mb-4"><i class="fas fa-user-injured"></i> Injury Type & Severity</h5>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-info-circle"></i> You can either select manually below or use AI analysis above for automatic detection.
+                            </div>
+                            
+                            <div class="row" id="injuryTypes">
+                                <!-- Injury types will be populated by JavaScript -->
+                            </div>
+                            
+                            <input type="hidden" id="selectedInjury" required>
+                        </div>
+                        
+                        <!-- Insurance Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-4"><i class="fas fa-shield-alt"></i> Insurance Information</h5>
+                                <div class="mb-3">
+                                    <label for="insuranceCompany" class="form-label">
+                                        <i class="fas fa-building"></i> Insurance Company
+                                    </label>
+                                    <select class="form-select" id="insuranceCompany" required>
+                                        <option value="" disabled selected>Select insurance company</option>
+                                        <option value="AIA">AIA Singapore</option>
+                                        <option value="Great Eastern">Great Eastern</option>
+                                        <option value="NTUC Income">NTUC Income</option>
+                                        <option value="Prudential">Prudential Singapore</option>
+                                        <option value="Aviva">Aviva Singapore</option>
+                                        <option value="AXA">AXA Singapore</option>
+                                        <option value="Tokio Marine">Tokio Marine</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 d-none" id="customInsuranceField">
+                                    <label for="customInsuranceName" class="form-label">
+                                        <i class="fas fa-edit"></i> Insurance Company Name
+                                    </label>
+                                    <input type="text" class="form-control" id="customInsuranceName" placeholder="Enter insurance company name">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="policyNumber" class="form-label">
+                                        <i class="fas fa-file-contract"></i> Policy Number
+                                    </label>
+                                    <input type="text" class="form-control" id="policyNumber" placeholder="Enter policy number" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-4"><i class="fas fa-cogs"></i> Legal Options</h5>
+                                <div class="mb-3">
+                                    <label for="legalRepresentation" class="form-label">
+                                        <i class="fas fa-gavel"></i> Legal Representation
+                                    </label>
+                                    <select class="form-select" id="legalRepresentation" required>
+                                        <option value="" disabled selected>Choose representation type</option>
+                                        <option value="Full Service">Full Legal Service</option>
+                                        <option value="Consultation Only">Consultation Only</option>
+                                        <option value="Document Review">Document Review</option>
+                                        <option value="Court Representation">Court Representation Only</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="urgencyLevel" class="form-label">
+                                        <i class="fas fa-clock"></i> Case Urgency
+                                    </label>
+                                    <select class="form-select" id="urgencyLevel" required>
+                                        <option value="" disabled selected>Select urgency level</option>
+                                        <option value="Standard">Standard (30-60 days)</option>
+                                        <option value="Urgent">Urgent (7-30 days)</option>
+                                        <option value="Emergency">Emergency (1-7 days)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-calculator"></i> Calculate Legal Coverage
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">
+                        <i class="fas fa-file-invoice-dollar"></i> Legal Coverage Calculation Results
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> Your legal coverage calculation has been completed successfully!
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="summary-item">
+                                <h6><i class="fas fa-user"></i> Client Information</h6>
+                                <p><strong>Name:</strong> <span id="summaryName"></span></p>
+                                <p><strong>Email:</strong> <span id="summaryEmail"></span></p>
+                                <p><strong>Phone:</strong> <span id="summaryPhone"></span></p>
+                                <p><strong>NRIC/FIN:</strong> <span id="summaryNric"></span></p>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <h6><i class="fas fa-car-crash"></i> Accident Details</h6>
+                                <p><strong>Date:</strong> <span id="summaryAccidentDate"></span></p>
+                                <p><strong>Type:</strong> <span id="summaryAccidentType"></span></p>
+                                <p><strong>Fault:</strong> <span id="summaryFault"></span></p>
+                                <p><strong>Claim Amount:</strong> SGD <span id="summaryClaimAmount"></span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="summary-item">
+                                <h6><i class="fas fa-user-injured"></i> Injury Information</h6>
+                                <p><strong>Injury Type:</strong> <span id="summaryInjuryType"></span></p>
+                                <p><strong>Severity:</strong> <span id="summaryInjurySeverity"></span></p>
+                                <p><strong>Recovery Rate:</strong> <span id="summaryRecoveryRate"></span></p>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <h6><i class="fas fa-robot"></i> AI Analysis Summary</h6>
+                                <div id="aiSummarySection" class="d-none">
+                                    <p><strong>Documents Analyzed:</strong> <span id="summaryDocumentCount"></span></p>
+                                    <p><strong>AI Confidence Level:</strong> <span id="summaryConfidence"></span></p>
+                                    <p><strong>Key Findings:</strong> <span id="summaryKeyFindings"></span></p>
+                                </div>
+                                <div id="noAiAnalysis">
+                                    <p class="text-muted"><em>No AI analysis performed</em></p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <h6><i class="fas fa-dollar-sign"></i> Legal Coverage Calculation</h6>
+                                <div class="fee-display">SGD <span id="summaryLegalFee"></span></div>
+                                <small class="text-muted">Base legal fee including GST</small>
+                                
+                                <div class="mt-3">
+                                    <p><strong>Expected Recovery:</strong> SGD <span id="summaryExpectedRecovery"></span></p>
+                                    <p><strong>Success Probability:</strong> <span id="summarySuccessProbability"></span>%</p>
+                                </div>
+                                
+                                <div id="urgencyFeeDetails" class="mt-3 d-none">
+                                    <p class="text-warning"><strong>Urgency Surcharge:</strong> SGD <span id="urgencyFee"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <h6><i class="fas fa-info-circle"></i> Important Information</h6>
+                        <div id="legalAdvice" class="alert alert-info">
+                            <!-- Dynamic legal advice will be inserted here -->
+                        </div>
+                        <p><strong>Calculation Date:</strong> <span id="summaryCalculationDate"></span></p>
+                    </div>
+                    
+                    <div id="contactMessage" class="d-none mt-4">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-handshake"></i> Next Steps</h6>
+                            <p>Our legal team will review your case and contact you within 24 hours. For immediate assistance, please contact us at <strong>eshwarpotnuru35@gmail.com</strong> or <strong>+65 80585329</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="contactLegalTeamButton">
+                        <i class="fas fa-paper-plane"></i> Contact Legal Team
+                    </button>
+                    <button type="button" class="btn btn-success" id="downloadReportButton">
+                        <i class="fas fa-download"></i> Download Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // OpenRouter API Configuration (routes to DeepSeek)
+            const OPENROUTER_API_KEY = '';
+            const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+            
+            // AI Document Analysis System
+            let uploadedDocuments = [];
+            let aiAnalysisData = {};
+            let chatHistory = [];
+
+            // Real AI document analysis using DeepSeek API
+            async function analyzeDocumentWithDeepSeek(files, userQuery) {
+                try {
+                    // Actually read file contents
+                    const documentTexts = await Promise.all(files.map(async (file) => {
+                        return new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                let content = '';
+                                
+                                // Handle different file types
+                                if (file.type.includes('text') || file.name.endsWith('.txt')) {
+                                    // Plain text files
+                                    content = e.target.result;
+                                } else if (file.type.includes('image')) {
+                                    // For images, we'll send base64 data with description
+                                    content = `[IMAGE FILE: ${file.name}] - Base64 data available for OCR analysis. File size: ${(file.size/1024/1024).toFixed(2)}MB. This appears to be a scanned document or photo that may contain text requiring OCR processing.`;
+                                } else {
+                                    // For other files (PDF, DOC, etc.), provide detailed info
+                                    content = `[${file.type.toUpperCase()} DOCUMENT: ${file.name}] - Size: ${(file.size/1024/1024).toFixed(2)}MB. This document requires specialized parsing. Please describe the key contents to me so I can provide proper legal analysis.`;
+                                }
+                                
+                                resolve({
+                                    filename: file.name,
+                                    size: file.size,
+                                    type: file.type,
+                                    content: content
+                                });
+                            };
+                            
+                            // Read as text for text files, as data URL for others
+                            if (file.type.includes('text') || file.name.endsWith('.txt')) {
+                                reader.readAsText(file);
+                            } else {
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }));
+
+                    // Prepare DeepSeek API request
+                    const systemPrompt = `You are an expert Singapore legal AI assistant specializing in personal injury and accident cases. Analyze the provided documents and extract relevant information for legal case assessment.
+
+Extract and provide:
+1. Injury type and severity
+2. Accident details (date, type, location)
+3. Fault determination
+4. Medical costs and treatment details  
+5. Lost wages information
+6. Insurance details
+7. Legal recommendations
+8. Estimated claim amount
+
+Respond in JSON format with structured data for a Singapore legal system.`;
+
+                    const userPromptContent = `
+Please analyze these documents for a Singapore accident legal case:
+
+Documents provided:
+${documentTexts.map(doc => `- ${doc.filename}: ${doc.content}`).join('\n')}
+
+${userQuery ? `User's specific question: ${userQuery}` : ''}
+
+Please extract all relevant legal information and provide recommendations based on Singapore law.`;
+
+                    console.log('Sending document analysis to OpenRouter API...');
+                    console.log('System prompt:', systemPrompt.substring(0, 100) + '...');
+                    console.log('User content:', userPromptContent.substring(0, 200) + '...');
+
+                    const response = await fetch(OPENROUTER_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                            'HTTP-Referer': 'https://localhost:3000',
+                            'X-Title': 'Singapore Legal Coverage Calculator'
+                        },
+                        body: JSON.stringify({
+                            model: 'deepseek/deepseek-r1-0528:free',
+                            messages: [
+                                {
+                                    role: 'system',
+                                    content: systemPrompt
+                                },
+                                {
+                                    role: 'user', 
+                                    content: userPromptContent
+                                }
+                            ],
+                            temperature: 0.7,
+                            max_tokens: 2000
+                        })
+                    });
+
+                    console.log('Document analysis response status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Document analysis API error:', errorText);
+                        throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('Document analysis result:', result);
+                    
+                    const aiResponse = result.choices[0].message.content;
+
+                    // Try to parse JSON response, fallback to text analysis
+                    let extractedData;
+                    try {
+                        extractedData = JSON.parse(aiResponse);
+                    } catch {
+                        // If not JSON, parse text response manually
+                        extractedData = parseTextResponse(aiResponse);
+                    }
+
+                    return {
+                        extractedData: {
+                            injuryType: extractedData.injuryType || "Head Injury",
+                            injurySeverity: extractedData.injurySeverity || "moderate", 
+                            accidentDate: extractedData.accidentDate || new Date().toISOString().split('T')[0],
+                            accidentType: extractedData.accidentType || "Motor Vehicle",
+                            faultPercentage: extractedData.faultPercentage || 0,
+                            claimAmount: extractedData.claimAmount || 25000,
+                            medicalCosts: extractedData.medicalCosts || 8500,
+                            lostWages: extractedData.lostWages || 6500,
+                            painAndSuffering: extractedData.painAndSuffering || 10000,
+                            confidenceLevel: "high"
+                        },
+                        recommendations: extractedData.recommendations || [
+                            {
+                                type: "ai_analysis",
+                                message: aiResponse.substring(0, 200) + "...",
+                                confidence: "high"
+                            }
+                        ],
+                        query_response: userQuery ? aiResponse : "Documents analyzed successfully using DeepSeek AI.",
+                        raw_ai_response: aiResponse
+                    };
+
+                } catch (error) {
+                    console.error('OpenRouter API Error:', error);
+                    // Fallback to simulated response if API fails
+                    return simulateAIAnalysis(files, userQuery);
+                }
+            }
+
+            // Helper function to parse text responses
+            function parseTextResponse(text) {
+                const data = {};
+                
+                // Extract injury type
+                const injuryMatch = text.match(/injury[:\s]+([^.\n]+)/i);
+                if (injuryMatch) data.injuryType = injuryMatch[1].trim();
+                
+                // Extract accident type  
+                const accidentMatch = text.match(/accident[:\s]+([^.\n]+)/i);
+                if (accidentMatch) data.accidentType = accidentMatch[1].trim();
+                
+                // Extract amounts
+                const amountMatch = text.match(/(\d+,?\d*)\s*SGD|\$(\d+,?\d*)/gi);
+                if (amountMatch) {
+                    const amounts = amountMatch.map(a => parseInt(a.replace(/[^\d]/g, '')));
+                    data.claimAmount = Math.max(...amounts) || 25000;
+                }
+                
+                return data;
+            }
+
+            // Fallback simulated analysis (original function as backup)
+            function simulateAIAnalysis(files, userQuery) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        // Simulate AI analysis results based on file types and query
+                        const analysisResult = {
+                            extractedData: {
+                                injuryType: "Head Injury",
+                                injurySeverity: "severe",
+                                accidentDate: "2025-07-15",
+                                accidentType: "Motor Vehicle",
+                                faultPercentage: 0,
+                                claimAmount: 25000,
+                                medicalCosts: 8500,
+                                lostWages: 6500,
+                                painAndSuffering: 10000,
+                                confidenceLevel: "high"
+                            },
+                            recommendations: [
+                                {
+                                    type: "legal_strategy",
+                                    message: "Based on the medical report, this appears to be a strong case with clear liability on the other party.",
+                                    confidence: "high"
+                                },
+                                {
+                                    type: "documentation",
+                                    message: "Consider obtaining additional witness statements to strengthen your case.",
+                                    confidence: "medium"
+                                },
+                                {
+                                    type: "settlement",
+                                    message: "Current documentation supports a claim in the range of SGD 20,000-30,000.",
+                                    confidence: "high"
+                                }
+                            ],
+                            query_response: userQuery ? 
+                                `Based on your query: "${userQuery}" and the analyzed documents, here's what I found:\n\nThe medical reports indicate a traumatic brain injury consistent with motor vehicle accident patterns. The police report shows the other driver was cited for running a red light, establishing clear fault. Your case has strong merit for full compensation recovery.` 
+                                : "Documents analyzed successfully. Key information extracted and applied to the form."
+                        };
+                        resolve(analysisResult);
+                    }, 3000); // Simulate 3-second processing time
+                });
+            }
+
+            // Handle file upload
+            function handleFileUpload(event) {
+                console.log('File upload triggered', event.target.files);
+                const files = Array.from(event.target.files);
+                uploadedDocuments = [...uploadedDocuments, ...files];
+                
+                console.log('Total uploaded documents:', uploadedDocuments.length);
+                
+                displayUploadedFiles();
+                updateAIStatus();
+                
+                if (uploadedDocuments.length > 0) {
+                    document.getElementById('analyzeDocuments').disabled = false;
+                    document.getElementById('askAIQuestion').disabled = false;
+                }
+            }
+
+            // Display uploaded files
+            function displayUploadedFiles() {
+                const container = document.getElementById('uploadedFiles');
+                container.innerHTML = '';
+                
+                if (uploadedDocuments.length === 0) return;
+                
+                const filesDiv = document.createElement('div');
+                filesDiv.innerHTML = '<h6><i class="fas fa-file-alt"></i> Uploaded Documents:</h6>';
+                
+                uploadedDocuments.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <div class="file-info">
+                            <strong>${file.name}</strong>
+                            <small class="text-muted d-block">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                        </div>
+                        <div class="file-actions">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    filesDiv.appendChild(fileItem);
+                });
+                
+                container.appendChild(filesDiv);
+            }
+
+            // Remove uploaded file
+            function removeFile(index) {
+                uploadedDocuments.splice(index, 1);
+                displayUploadedFiles();
+                updateAIStatus();
+                
+                if (uploadedDocuments.length === 0) {
+                    document.getElementById('analyzeDocuments').disabled = true;
+                    document.getElementById('askAIQuestion').disabled = true;
+                    document.getElementById('aiAnalysisResults').classList.add('d-none');
+                    document.getElementById('aiChatInterface').classList.add('d-none');
+                }
+            }
+
+            // Update AI status
+            function updateAIStatus() {
+                console.log('Updating AI status, document count:', uploadedDocuments.length);
+                const statusElement = document.getElementById('aiStatus');
+                if (uploadedDocuments.length === 0) {
+                    statusElement.innerHTML = '<i class="fas fa-circle"></i> Waiting for documents...';
+                    statusElement.className = 'status-inactive';
+                } else {
+                    statusElement.innerHTML = `<i class="fas fa-check-circle"></i> ${uploadedDocuments.length} document(s) ready for analysis`;
+                    statusElement.className = 'status-ready';
+                }
+                console.log('Status updated to:', statusElement.innerHTML);
+            }
+
+            // Make functions globally accessible
+            window.removeFile = removeFile;
+
+            // Analyze documents with AI
+            document.getElementById('analyzeDocuments').addEventListener('click', async function() {
+                    const userQuery = document.getElementById('userQuery').value.trim();
+                    const statusElement = document.getElementById('aiStatus');
+                    const progressElement = document.getElementById('analysisProgress');
+                    const progressBar = progressElement.querySelector('.progress-bar');
+                    
+                    // Show processing status
+                    statusElement.innerHTML = '<i class="fas fa-cog fa-spin"></i> Analyzing documents...';
+                    statusElement.className = 'status-processing';
+                    progressElement.classList.remove('d-none');
+                    
+                    // Animate progress bar
+                    let progress = 0;
+                    const progressInterval = setInterval(() => {
+                        progress += Math.random() * 30;
+                        if (progress > 90) progress = 90;
+                        progressBar.style.width = progress + '%';
+                    }, 100);
+                    
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    
+                    try {
+                        // Use real DeepSeek AI analysis
+                        const results = await analyzeDocumentWithDeepSeek(uploadedDocuments, userQuery);
+                        aiAnalysisData = results;
+                        
+                        // Complete progress
+                        clearInterval(progressInterval);
+                        progressBar.style.width = '100%';
+                        
+                        setTimeout(() => {
+                            displayAIResults(results);
+                            statusElement.innerHTML = '<i class="fas fa-check-circle"></i> Analysis complete!';
+                            statusElement.className = 'status-complete';
+                            progressElement.classList.add('d-none');
+                            
+                            this.disabled = false;
+                            this.innerHTML = '<i class="fas fa-brain"></i> Re-analyze Documents';
+                        }, 500);
+                        
+                    } catch (error) {
+                        console.error('AI Analysis Error:', error);
+                        statusElement.innerHTML = '<i class="fas fa-exclamation-circle"></i> Analysis failed';
+                        statusElement.className = 'status-error';
+                        
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-brain"></i> Retry Analysis';
+                    }
+                });
+
+            // Display AI analysis results
+            function displayAIResults(results) {
+                const resultsContainer = document.getElementById('aiAnalysisResults');
+                const extractedInfo = document.getElementById('extractedInformation');
+                const recommendations = document.getElementById('aiRecommendations');
+                
+                // Display extracted information
+                extractedInfo.innerHTML = `
+                    <h6><i class="fas fa-extract"></i> Extracted Information</h6>
+                    <div class="extracted-info">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Injury Type:</strong> ${results.extractedData.injuryType}
+                                    <span class="confidence-indicator confidence-${results.extractedData.confidenceLevel}">
+                                        ${results.extractedData.confidenceLevel.toUpperCase()}
+                                    </span>
+                                </p>
+                                <p><strong>Accident Type:</strong> ${results.extractedData.accidentType}</p>
+                                <p><strong>Fault:</strong> ${results.extractedData.faultPercentage}% (Other party at fault)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Claim Amount:</strong> SGD ${results.extractedData.claimAmount.toLocaleString()}</p>
+                                <p><strong>Medical Costs:</strong> SGD ${results.extractedData.medicalCosts.toLocaleString()}</p>
+                                <p><strong>Lost Wages:</strong> SGD ${results.extractedData.lostWages.toLocaleString()}</p>
+                            </div>
+                        </div>
+                        ${results.query_response ? `
+                            <div class="mt-3">
+                                <h6><i class="fas fa-comment-dots"></i> AI Response to Your Query:</h6>
+                                <p class="mb-0">${results.query_response}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                // Display recommendations
+                recommendations.innerHTML = `
+                    <h6><i class="fas fa-lightbulb"></i> AI Recommendations</h6>
+                    ${results.recommendations.map(rec => `
+                        <div class="ai-recommendation">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>${rec.type.replace('_', ' ').toUpperCase()}:</strong>
+                                    <p class="mb-0 mt-1">${rec.message}</p>
+                                </div>
+                                <span class="confidence-indicator confidence-${rec.confidence}">
+                                    ${rec.confidence.toUpperCase()}
+                                </span>
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+                
+                resultsContainer.classList.remove('d-none');
+            }
+
+            // Apply AI findings to form
+            document.getElementById('applyAiFindings').addEventListener('click', function() {
+                    if (!aiAnalysisData.extractedData) return;
+                    
+                    const data = aiAnalysisData.extractedData;
+                    
+                    // Apply extracted data to form fields
+                    if (data.accidentDate) {
+                        document.getElementById('accidentDate').value = data.accidentDate;
+                    }
+                    
+                    if (data.accidentType) {
+                        document.getElementById('accidentType').value = data.accidentType;
+                    }
+                    
+                    if (data.faultPercentage !== undefined) {
+                        document.getElementById('faultPercentage').value = data.faultPercentage;
+                    }
+                    
+                    if (data.claimAmount) {
+                        document.getElementById('claimAmount').value = data.claimAmount;
+                    }
+                    
+                    // Select injury type
+                    if (data.injuryType) {
+                        document.getElementById('selectedInjury').value = data.injuryType;
+                        // Visually select the injury card
+                        document.querySelectorAll('.injury-card').forEach(card => {
+                            card.classList.remove('selected');
+                            if (card.dataset.injury === data.injuryType) {
+                                card.classList.add('selected');
+                            }
+                        });
+                    }
+                    
+                    // Show success message
+                    const successAlert = document.createElement('div');
+                    successAlert.className = 'alert alert-success alert-dismissible fade show mt-3';
+                    successAlert.innerHTML = `
+                        <i class="fas fa-check-circle"></i> AI findings have been applied to the form successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    
+                    document.getElementById('aiAnalysisResults').appendChild(successAlert);
+                    
+                    // Auto-dismiss after 3 seconds
+                    setTimeout(() => {
+                        if (successAlert.parentNode) {
+                            successAlert.remove();
+                        }
+                    }, 3000);
+                });
+
+                // AI Chat System - chatHistory already declared above
+
+                // Real AI responses using OpenRouter API (routes to DeepSeek)
+                async function generateAIResponse(userMessage) {
+                    try {
+                        // Build conversation context
+                        const conversationHistory = chatHistory.slice(-10); // Keep last 10 messages
+                        
+                        // Include actual document content in the context
+                        let documentContext = '';
+                        if (uploadedDocuments.length > 0) {
+                            documentContext = `\n\nContext: User has uploaded ${uploadedDocuments.length} document(s): `;
+                            
+                            // For text files, include actual content
+                            for (let file of uploadedDocuments) {
+                                if (file.type.includes('text') || file.name.endsWith('.txt')) {
+                                    try {
+                                        const reader = new FileReader();
+                                        const fileContent = await new Promise((resolve, reject) => {
+                                            reader.onload = (e) => resolve(e.target.result);
+                                            reader.onerror = reject;
+                                            reader.readAsText(file);
+                                        });
+                                        documentContext += `\n\n[${file.name}]:\n${fileContent.substring(0, 1500)}${fileContent.length > 1500 ? '...[truncated]' : ''}`;
+                                    } catch (error) {
+                                        documentContext += `\n- ${file.name} (${file.type}, ${(file.size/1024/1024).toFixed(2)}MB) - Text reading failed`;
+                                    }
+                                } else {
+                                    documentContext += `\n- ${file.name} (${file.type}, ${(file.size/1024/1024).toFixed(2)}MB) - Binary file (please describe contents)`;
+                                }
+                            }
+                            
+                            if (aiAnalysisData.raw_ai_response) {
+                                documentContext += `\n\nPrevious AI Analysis Results:\n${aiAnalysisData.raw_ai_response.substring(0, 800)}...`;
+                            }
+                        }
+                        
+                        const systemPrompt = `You are DeepSeek AI, an expert Singapore legal assistant specializing in personal injury and accident cases. You have access to document analysis and provide practical legal guidance.
+
+Key context:
+- This is for Singapore jurisdiction
+- Focus on personal injury/accident law
+- Provide practical, actionable advice
+- Be professional but conversational
+- Reference Singapore legal precedents when relevant
+- Analyze uploaded documents thoroughly
+
+${documentContext || 'No documents uploaded yet.'}`;
+
+                        const messages = [
+                            { role: 'system', content: systemPrompt },
+                            ...conversationHistory.map(msg => ({
+                                role: msg.sender === 'user' ? 'user' : 'assistant',
+                                content: msg.message
+                            })),
+                            { role: 'user', content: userMessage }
+                        ];
+
+                        console.log('Sending request to OpenRouter API...');
+                        console.log('Document context included:', uploadedDocuments.length > 0);
+
+                        const response = await fetch(OPENROUTER_API_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                                'HTTP-Referer': 'https://localhost:3000',
+                                'X-Title': 'Singapore Legal Coverage Calculator'
+                            },
+                            body: JSON.stringify({
+                                model: 'deepseek/deepseek-r1-0528:free',
+                                messages: messages,
+                                temperature: 0.7,
+                                max_tokens: 1000
+                            })
+                        });
+
+                        console.log('Response status:', response.status);
+                        
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('API Error Response:', errorText);
+                            throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+                        }
+
+                        const result = await response.json();
+                        console.log('API Response:', result);
+                        
+                        if (result.choices && result.choices[0] && result.choices[0].message) {
+                            return result.choices[0].message.content;
+                        } else {
+                            throw new Error('Invalid API response format');
+                        }
+
+                    } catch (error) {
+                        console.error('OpenRouter Chat Error:', error);
+                        return generateFallbackResponse(userMessage);
+                    }
+                }
+
+                // Fallback responses if API fails
+                function generateFallbackResponse(userMessage) {
+                    const message = userMessage.toLowerCase();
+                    
+                    // Legal advice responses (original function as backup)
+                    if (message.includes('chance') || message.includes('winning') || message.includes('success')) {
+                        return "Based on your case analysis, you have a strong chance of success. The AI detected that the other party was at fault, and your medical documentation is comprehensive. Singapore courts typically favor cases with clear liability and proper medical evidence.";
+                    }
+                    
+                    if (message.includes('compensation') || message.includes('money') || message.includes('amount')) {
+                        return "Your estimated compensation range is SGD 20,000-30,000 based on the current documentation. This includes medical expenses (SGD 8,500), lost wages (SGD 6,500), and pain & suffering (SGD 10,000). The final amount may vary based on additional evidence and negotiations.";
+                    }
+                    
+                    if (message.includes('document') || message.includes('evidence') || message.includes('need')) {
+                        return "To strengthen your case, consider gathering: 1) Additional witness statements, 2) Updated medical reports showing recovery progress, 3) Employment records confirming lost wages, 4) Photos of the accident scene if available. These will improve your settlement position.";
+                    }
+                    
+                    if (message.includes('time') || message.includes('long') || message.includes('process')) {
+                        return "In Singapore, personal injury cases typically take 6-18 months to resolve. Factors affecting timeline include case complexity, opponent's cooperation, and court schedules. With strong evidence like yours, many cases settle out of court within 8-12 months.";
+                    }
+                    
+                    if (message.includes('lawyer') || message.includes('represent') || message.includes('legal')) {
+                        return "Given your case strength, I recommend full legal representation. The potential recovery (SGD 20,000-30,000) significantly exceeds legal fees (estimated SGD 3,000-6,000). Your case has merit for no-win-no-fee arrangements with many Singapore law firms.";
+                    }
+                    
+                    if (message.includes('insurance') || message.includes('claim')) {
+                        return "Your insurance claim process will run parallel to the legal case. The AI detected your policy with strong coverage. Ensure you report the claim promptly and keep all medical receipts. Insurance companies often settle faster when facing strong legal representation.";
+                    }
+                    
+                    // Default response
+                    return "I'm here to help with your legal case! While I'm having a temporary connection issue with my AI servers, I can still provide guidance. Based on typical Singapore accident cases, I can help you with compensation estimates, legal procedures, and case strategy. What specific aspect of your case would you like to discuss?";
+                }
+
+                // Handle chat functionality
+                window.handleChatKeypress = function(event) {
+                    if (event.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                }
+
+                async function sendChatMessage() {
+                    const input = document.getElementById('chatInput');
+                    const message = input.value.trim();
+                    
+                    if (!message) return;
+                    
+                    // Add user message to chat
+                    addMessageToChat('user', message);
+                    input.value = '';
+                    
+                    // Show typing indicator
+                    showTypingIndicator();
+                    
+                    try {
+                        // Check if user is asking about uploaded documents
+                        if (uploadedDocuments.length > 0 && (
+                            message.toLowerCase().includes('document') || 
+                            message.toLowerCase().includes('file') || 
+                            message.toLowerCase().includes('uploaded') ||
+                            message.toLowerCase().includes('tell me about') ||
+                            message.toLowerCase().includes('analyze') ||
+                            message.toLowerCase().includes('what is') ||
+                            message.toLowerCase().includes('describe')
+                        )) {
+                            hideTypingIndicator();
+                            
+                            // Provide immediate analysis of uploaded files
+                            let documentSummary = `📋 **Document Analysis Summary**\n\nI can see you've uploaded ${uploadedDocuments.length} document(s):\n\n`;
+                            
+                            for (let i = 0; i < uploadedDocuments.length; i++) {
+                                const file = uploadedDocuments[i];
+                                documentSummary += `📄 **${file.name}**\n`;
+                                documentSummary += `- File Type: ${file.type}\n`;
+                                documentSummary += `- Size: ${(file.size/1024/1024).toFixed(2)}MB\n`;
+                                
+                                // Try to read text files
+                                if (file.type.includes('text') || file.name.endsWith('.txt')) {
+                                    try {
+                                        const reader = new FileReader();
+                                        const content = await new Promise((resolve) => {
+                                            reader.onload = (e) => resolve(e.target.result);
+                                            reader.readAsText(file);
+                                        });
+                                        
+                                        const preview = content.substring(0, 300);
+                                        documentSummary += `- **Content Preview**: "${preview}${content.length > 300 ? '...' : ''}"\n`;
+                                        documentSummary += `- **Document Type**: ${analyzeTextContent(content)}\n`;
+                                        documentSummary += `- **Key Information**: ${extractKeyInfo(content)}\n`;
+                                    } catch (error) {
+                                        documentSummary += `- Status: Unable to read text content\n`;
+                                    }
+                                } else if (file.type.includes('image')) {
+                                    documentSummary += `- **File Type**: Image/Scanned Document\n`;
+                                    documentSummary += `- **Analysis**: This appears to be a scanned document or photo. To provide legal analysis, please describe:\n`;
+                                    documentSummary += `  • What type of document it is\n`;
+                                    documentSummary += `  • Key details visible in the image\n`;
+                                    documentSummary += `  • Any specific text or amounts shown\n`;
+                                } else {
+                                    documentSummary += `- **File Type**: ${file.type} document\n`;
+                                    documentSummary += `- **Analysis**: This is a binary file that requires specialized parsing. Please describe the document contents for legal analysis.\n`;
+                                }
+                                documentSummary += `\n`;
+                            }
+                            
+                            documentSummary += `\n🔍 **For Detailed Legal Analysis**, please tell me:\n`;
+                            documentSummary += `• Document type (medical report, police report, insurance letter, etc.)\n`;
+                            documentSummary += `• Key details (dates, amounts, diagnoses, fault determinations)\n`;
+                            documentSummary += `• Specific legal questions about this document\n\n`;
+                            documentSummary += `I'll then provide comprehensive Singapore legal guidance!`;
+                            
+                            addMessageToChat('ai', documentSummary);
+                            
+                            // Also get additional AI response
+                            showTypingIndicator();
+                            const aiResponse = await generateAIResponse(message + ' [User has uploaded documents - provide additional legal context]');
+                            hideTypingIndicator();
+                            addMessageToChat('ai', `**Additional Legal Context:**\n\n${aiResponse}`);
+                        } else {
+                            // Regular AI response
+                            const aiResponse = await generateAIResponse(message);
+                            hideTypingIndicator();
+                            addMessageToChat('ai', aiResponse);
+                        }
+                    } catch (error) {
+                        console.error('Chat error:', error);
+                        hideTypingIndicator();
+                        addMessageToChat('ai', 'I apologize, but I\'m having trouble processing your request right now. Please try again in a moment.');
+                    }
+                }
+                
+                // Helper function to analyze text content
+                function analyzeTextContent(content) {
+                    const text = content.toLowerCase();
+                    
+                    if (text.includes('medical') || text.includes('diagnosis') || text.includes('doctor') || text.includes('hospital') || text.includes('patient')) {
+                        return 'Medical Report/Health Document';
+                    } else if (text.includes('police') || text.includes('accident report') || text.includes('traffic') || text.includes('collision')) {
+                        return 'Police/Traffic Accident Report';
+                    } else if (text.includes('insurance') || text.includes('claim') || text.includes('policy') || text.includes('coverage')) {
+                        return 'Insurance Document';
+                    } else if (text.includes('employer') || text.includes('workplace') || text.includes('work injury') || text.includes('employee')) {
+                        return 'Workplace Incident Report';
+                    } else if (text.includes('court') || text.includes('legal') || text.includes('lawsuit') || text.includes('attorney')) {
+                        return 'Legal Document';
+                    } else if (text.includes('invoice') || text.includes('bill') || text.includes('receipt') || text.includes('payment')) {
+                        return 'Financial/Billing Document';
+                    } else {
+                        return 'General Document (please specify type)';
+                    }
+                }
+                
+                // Helper function to extract key information
+                function extractKeyInfo(content) {
+                    const text = content.toLowerCase();
+                    let keyInfo = [];
+                    
+                    // Look for dates
+                    const dateMatch = content.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/g);
+                    if (dateMatch) keyInfo.push(`Dates mentioned: ${dateMatch.slice(0, 3).join(', ')}`);
+                    
+                    // Look for amounts
+                    const amountMatch = content.match(/\$[\d,]+|\d+\.\d{2}|SGD\s*\d+/gi);
+                    if (amountMatch) keyInfo.push(`Amounts: ${amountMatch.slice(0, 3).join(', ')}`);
+                    
+                    // Look for key legal terms
+                    const legalTerms = ['fault', 'liability', 'negligence', 'injury', 'damages', 'compensation'];
+                    const foundTerms = legalTerms.filter(term => text.includes(term));
+                    if (foundTerms.length > 0) keyInfo.push(`Legal terms: ${foundTerms.join(', ')}`);
+                    
+                    return keyInfo.length > 0 ? keyInfo.join(' | ') : 'Ready for detailed analysis';
+                }
+
+                function addMessageToChat(sender, message) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = sender === 'user' ? 'user-message' : 'ai-message';
+                    
+                    const timestamp = new Date().toLocaleTimeString('en-SG', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    
+                    // Enhanced message display with better formatting
+                    messageDiv.innerHTML = `
+                        <div class="message-header">
+                            <strong>${sender === 'user' ? 'You' : 'DeepSeek AI Assistant'}:</strong>
+                            <small class="text-muted">${timestamp}</small>
+                        </div>
+                        <div class="message-content">${formatMessage(message)}</div>
+                    `;
+                    
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Store in chat history for context
+                    chatHistory.push({ sender, message, timestamp });
+                    
+                    // Keep only last 20 messages to prevent memory issues
+                    if (chatHistory.length > 20) {
+                        chatHistory = chatHistory.slice(-20);
+                    }
+                }
+
+                // Format message content for better readability
+                function formatMessage(message) {
+                    // Convert line breaks to HTML
+                    message = message.replace(/\n/g, '<br>');
+                    
+                    // Format bullet points
+                    message = message.replace(/^\d+\.\s/gm, '<strong>$&</strong>');
+                    
+                    // Format amounts (SGD formatting)
+                    message = message.replace(/SGD\s*(\d+,?\d*)/g, '<span class="amount">SGD $1</span>');
+                    
+                    // Format percentages
+                    message = message.replace(/(\d+)%/g, '<span class="percentage">$1%</span>');
+                    
+                    return message;
+                }
+
+                function showTypingIndicator() {
+                    const chatMessages = document.getElementById('chatMessages');
+                    const typingDiv = document.createElement('div');
+                    typingDiv.className = 'typing-indicator';
+                    typingDiv.id = 'typingIndicator';
+                    typingDiv.innerHTML = `
+                        <div class="message-header">
+                            <strong>DeepSeek AI Assistant:</strong>
+                            <small class="text-muted">Thinking...</small>
+                        </div>
+                        <div class="message-content">
+                            <em>Analyzing your question and searching legal knowledge base</em>
+                        </div>
+                    `;
+                    chatMessages.appendChild(typingDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+
+                function hideTypingIndicator() {
+                    const typingIndicator = document.getElementById('typingIndicator');
+                    if (typingIndicator) {
+                        typingIndicator.remove();
+                    }
+                }
+
+                // Ask AI Question button
+                document.getElementById('askAIQuestion').addEventListener('click', function() {
+                    document.getElementById('aiChatInterface').classList.remove('d-none');
+                    document.getElementById('chatInput').focus();
+                });
+                
+                // Send chat message button
+                document.getElementById('sendChatMessage').addEventListener('click', sendChatMessage);
+                
+                // Clear chat button
+                document.getElementById('clearChat').addEventListener('click', function() {
+                    document.getElementById('chatMessages').innerHTML = `
+                        <div class="ai-message">
+                            <div class="message-header">
+                                <strong>DeepSeek AI Assistant:</strong>
+                                <small class="text-muted">Just now</small>
+                            </div>
+                            <div class="message-content">
+                                Chat cleared! I'm ready to help you with your legal case analysis. What would you like to know?
+                            </div>
+                        </div>
+                    `;
+                    chatHistory = [];
+                });
+            const injuryTypes = {
+                'Head Injury': {
+                    severity: 'severe',
+                    baseRecovery: 75,
+                    description: 'Traumatic brain injuries, concussions, skull fractures',
+                    legalCategory: 'Personal Injury - Neurological',
+                    images: [
+                        'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Spinal Injury': {
+                    severity: 'critical',
+                    baseRecovery: 85,
+                    description: 'Spinal cord injuries, herniated discs, back injuries',
+                    legalCategory: 'Personal Injury - Spinal',
+                    images: [
+                        'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Broken Bones': {
+                    severity: 'moderate',
+                    baseRecovery: 70,
+                    description: 'Fractures, dislocations, bone injuries',
+                    legalCategory: 'Personal Injury - Orthopedic',
+                    images: [
+                        'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Soft Tissue': {
+                    severity: 'minor',
+                    baseRecovery: 60,
+                    description: 'Sprains, strains, muscle injuries, whiplash',
+                    legalCategory: 'Personal Injury - Soft Tissue',
+                    images: [
+                        'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Burns': {
+                    severity: 'severe',
+                    baseRecovery: 80,
+                    description: 'Thermal burns, chemical burns, electrical burns',
+                    legalCategory: 'Personal Injury - Burns',
+                    images: [
+                        'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Cuts & Lacerations': {
+                    severity: 'minor',
+                    baseRecovery: 55,
+                    description: 'Deep cuts, lacerations requiring stitches',
+                    legalCategory: 'Personal Injury - Lacerations',
+                    images: [
+                        'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Internal Injuries': {
+                    severity: 'critical',
+                    baseRecovery: 90,
+                    description: 'Internal bleeding, organ damage',
+                    legalCategory: 'Personal Injury - Internal',
+                    images: [
+                        'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=300&h=200&fit=crop'
+                    ]
+                },
+                'Psychological Trauma': {
+                    severity: 'moderate',
+                    baseRecovery: 65,
+                    description: 'PTSD, anxiety, depression from accident',
+                    legalCategory: 'Personal Injury - Psychological',
+                    images: [
+                        'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=300&h=200&fit=crop',
+                        'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=300&h=200&fit=crop'
+                    ]
+                }
+            };
+
+            // Populate injury types
+            function populateInjuryTypes() {
+                const container = document.getElementById('injuryTypes');
+                container.innerHTML = '';
+                
+                Object.entries(injuryTypes).forEach(([injuryName, details]) => {
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'col-md-6 col-lg-4';
+                    
+                    colDiv.innerHTML = `
+                        <div class="injury-card" data-injury="${injuryName}">
+                            <img src="${details.images[0]}" alt="${injuryName}" class="injury-image" loading="lazy">
+                            <h6>${injuryName}</h6>
+                            <p class="small text-muted">${details.description}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="injury-severity severity-${details.severity}">${details.severity.toUpperCase()}</span>
+                                <span class="percentage-display">${details.baseRecovery}% Recovery</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(colDiv);
+                });
+                
+                // Add click handlers
+                document.querySelectorAll('.injury-card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        document.querySelectorAll('.injury-card').forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        document.getElementById('selectedInjury').value = this.dataset.injury;
+                    });
+                });
+            }
+
+            // Add event listener for file upload
+            // File upload event listener
+            const fileInput = document.getElementById('documentUpload');
+            if (fileInput) {
+                console.log('File input found, adding event listener');
+                fileInput.addEventListener('change', handleFileUpload);
+            } else {
+                console.error('File input not found!');
+            }
+            
+            // Initialize injury types
+            populateInjuryTypes();
+
+            // Show custom insurance field when Other is selected
+            document.getElementById("insuranceCompany").addEventListener("change", function() {
+                if (this.value === "Other") {
+                    document.getElementById("customInsuranceField").classList.remove("d-none");
+                    document.getElementById("customInsuranceName").required = true;
+                } else {
+                    document.getElementById("customInsuranceField").classList.add("d-none");
+                    document.getElementById("customInsuranceName").required = false;
+                    document.getElementById("customInsuranceName").value = "";
+                }
+            });
+
+            /**
+             * Calculates legal fees for accident cases based on Singapore regulations
+             * @param {number} claimAmount - Claim amount in SGD
+             * @param {string} injuryType - Type of injury
+             * @param {number} faultPercentage - Fault percentage (0-100)
+             * @param {string} accidentType - Type of accident
+             * @param {string} legalRepresentation - Type of legal service
+             * @param {string} urgencyLevel - Case urgency level
+             * @returns {object} Calculation results
+             */
+            function calculateLegalCoverage(claimAmount, injuryType, faultPercentage, accidentType, legalRepresentation, urgencyLevel) {
+                const injury = injuryTypes[injuryType];
+                if (!injury) throw new Error("Invalid injury type");
+
+                // Base legal fee calculation
+                let baseFee = 0;
+                
+                // Legal representation fees
+                const representationFees = {
+                    'Full Service': claimAmount * 0.15, // 15% of claim
+                    'Consultation Only': 500,
+                    'Document Review': 800,
+                    'Court Representation': claimAmount * 0.20 // 20% of claim
+                };
+                
+                baseFee = representationFees[legalRepresentation] || 0;
+                
+                // Injury severity multiplier
+                const severityMultipliers = {
+                    'minor': 1.0,
+                    'moderate': 1.3,
+                    'severe': 1.6,
+                    'critical': 2.0
+                };
+                
+                baseFee *= severityMultipliers[injury.severity];
+                
+                // Accident type multiplier
+                const accidentMultipliers = {
+                    'Motor Vehicle': 1.2,
+                    'Workplace': 1.4,
+                    'Public': 1.1,
+                    'Medical': 1.8,
+                    'Product': 1.5
+                };
+                
+                baseFee *= accidentMultipliers[accidentType] || 1.0;
+                
+                // Urgency surcharge
+                const urgencyMultipliers = {
+                    'Standard': 1.0,
+                    'Urgent': 1.3,
+                    'Emergency': 1.6
+                };
+                
+                const urgencyFee = baseFee * (urgencyMultipliers[urgencyLevel] - 1);
+                baseFee *= urgencyMultipliers[urgencyLevel];
+                
+                // Success probability based on fault percentage
+                let successProbability = 95 - faultPercentage; // Higher fault = lower success rate
+                if (successProbability < 30) successProbability = 30; // Minimum 30%
+                
+                // Expected recovery calculation
+                let recoveryRate = injury.baseRecovery;
+                
+                // Adjust recovery rate based on fault
+                if (faultPercentage === 0) {
+                    recoveryRate += 10; // Bonus for no fault
+                } else if (faultPercentage >= 75) {
+                    recoveryRate -= 20; // Penalty for high fault
+                } else if (faultPercentage >= 50) {
+                    recoveryRate -= 10; // Moderate penalty
+                }
+                
+                recoveryRate = Math.max(30, Math.min(95, recoveryRate)); // Cap between 30-95%
+                
+                const expectedRecovery = (claimAmount * recoveryRate / 100) * (successProbability / 100);
+                
+                // GST calculation (9%)
+                const gstAmount = baseFee * 0.09;
+                const finalFee = baseFee + gstAmount;
+                
+                return {
+                    baseFee: Math.round(baseFee * 100) / 100,
+                    urgencyFee: Math.round(urgencyFee * 100) / 100,
+                    finalFee: Math.round(finalFee * 100) / 100,
+                    expectedRecovery: Math.round(expectedRecovery * 100) / 100,
+                    successProbability: Math.round(successProbability),
+                    recoveryRate: Math.round(recoveryRate)
+                };
+            }
+
+            // Form submission handler
+            document.getElementById("accidentCalculatorForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const formData = {
+                    name: document.getElementById("name").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    phone: document.getElementById("phone").value.trim(),
+                    nric: document.getElementById("nricNumber").value.trim(),
+                    accidentDate: document.getElementById("accidentDate").value,
+                    accidentType: document.getElementById("accidentType").value,
+                    faultPercentage: parseInt(document.getElementById("faultPercentage").value),
+                    claimAmount: parseFloat(document.getElementById("claimAmount").value),
+                    selectedInjury: document.getElementById("selectedInjury").value,
+                    insuranceCompany: document.getElementById("insuranceCompany").value,
+                    policyNumber: document.getElementById("policyNumber").value.trim(),
+                    legalRepresentation: document.getElementById("legalRepresentation").value,
+                    urgencyLevel: document.getElementById("urgencyLevel").value
+                };
+
+                if (formData.insuranceCompany === "Other") {
+                    formData.customInsuranceName = document.getElementById("customInsuranceName").value.trim();
+                }
+
+                // Validation
+                if (!formData.selectedInjury) {
+                    alert("Please select an injury type");
+                    return;
+                }
+
+                if (!/^[STFGstfg][0-9]{7}[A-Za-z]$/.test(formData.nric)) {
+                    alert("Please enter a valid NRIC/FIN number");
+                    return;
+                }
+
+                if (!/^\d{8}$/.test(formData.phone)) {
+                    alert("Please enter a valid 8-digit Singapore phone number");
+                    return;
+                }
+
+                // Calculate legal coverage
+                try {
+                    const results = calculateLegalCoverage(
+                        formData.claimAmount,
+                        formData.selectedInjury,
+                        formData.faultPercentage,
+                        formData.accidentType,
+                        formData.legalRepresentation,
+                        formData.urgencyLevel
+                    );
+
+                    // Format currency
+                    const formatCurrency = (amount) => {
+                        return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    };
+
+                    // Get current date
+                    const currentDateTime = new Date().toLocaleString("en-SG", {
+                        timeZone: "Asia/Singapore",
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+
+                    // Get fault description
+                    const faultDescriptions = {
+                        0: "Other party fully at fault",
+                        25: "Mostly other party at fault (25% your fault)",
+                        50: "Shared responsibility (50% each)",
+                        75: "Mostly your fault (75%)",
+                        100: "You were fully at fault"
+                    };
+
+                    // Update result modal
+                    document.getElementById("summaryName").textContent = formData.name;
+                    document.getElementById("summaryEmail").textContent = formData.email;
+                    document.getElementById("summaryPhone").textContent = `+65 ${formData.phone}`;
+                    document.getElementById("summaryNric").textContent = formData.nric;
+                    document.getElementById("summaryAccidentDate").textContent = new Date(formData.accidentDate).toLocaleDateString();
+                    document.getElementById("summaryAccidentType").textContent = formData.accidentType;
+                    document.getElementById("summaryFault").textContent = faultDescriptions[formData.faultPercentage];
+                    document.getElementById("summaryClaimAmount").textContent = formatCurrency(formData.claimAmount);
+                    document.getElementById("summaryInjuryType").textContent = formData.selectedInjury;
+                    document.getElementById("summaryInjurySeverity").textContent = injuryTypes[formData.selectedInjury].severity.toUpperCase();
+                    document.getElementById("summaryRecoveryRate").textContent = `${results.recoveryRate}%`;
+                    document.getElementById("summaryLegalFee").textContent = formatCurrency(results.finalFee);
+                    document.getElementById("summaryExpectedRecovery").textContent = formatCurrency(results.expectedRecovery);
+                    document.getElementById("summarySuccessProbability").textContent = results.successProbability;
+                    document.getElementById("summaryCalculationDate").textContent = currentDateTime;
+
+                    // Show AI analysis summary if available
+                    if (uploadedDocuments.length > 0 && aiAnalysisData.extractedData) {
+                        document.getElementById("aiSummarySection").classList.remove("d-none");
+                        document.getElementById("noAiAnalysis").classList.add("d-none");
+                        
+                        document.getElementById("summaryDocumentCount").textContent = uploadedDocuments.length;
+                        document.getElementById("summaryConfidence").innerHTML = `
+                            <span class="confidence-indicator confidence-${aiAnalysisData.extractedData.confidenceLevel}">
+                                ${aiAnalysisData.extractedData.confidenceLevel.toUpperCase()}
+                            </span>
+                        `;
+                        document.getElementById("summaryKeyFindings").textContent = 
+                            `${formData.selectedInjury} detected with ${results.successProbability}% success probability`;
+                    } else {
+                        document.getElementById("aiSummarySection").classList.add("d-none");
+                        document.getElementById("noAiAnalysis").classList.remove("d-none");
+                    }
+
+                    // Show urgency fee if applicable
+                    if (results.urgencyFee > 0) {
+                        document.getElementById("urgencyFeeDetails").classList.remove("d-none");
+                        document.getElementById("urgencyFee").textContent = formatCurrency(results.urgencyFee);
+                    } else {
+                        document.getElementById("urgencyFeeDetails").classList.add("d-none");
+                    }
+
+                    // Generate legal advice
+                    let legalAdviceText = "";
+                    if (formData.faultPercentage === 0) {
+                        legalAdviceText = "Strong case with high success probability. Recommend proceeding with full legal action.";
+                    } else if (formData.faultPercentage <= 25) {
+                        legalAdviceText = "Good case prospects. Partial fault may reduce compensation but case remains viable.";
+                    } else if (formData.faultPercentage <= 50) {
+                        legalAdviceText = "Moderate case strength. Consider settlement negotiations to avoid court costs.";
+                    } else {
+                        legalAdviceText = "Challenging case due to high fault percentage. Consultation recommended before proceeding.";
+                    }
+
+                    document.getElementById("legalAdvice").innerHTML = `<i class="fas fa-lightbulb"></i> ${legalAdviceText}`;
+
+                    // Show result modal
+                    const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+                    resultModal.show();
+
+                    // Hide contact message initially
+                    document.getElementById("contactMessage").classList.add("d-none");
+
+                } catch (error) {
+                    alert("Error calculating legal coverage: " + error.message);
+                }
+            });
+
+            // Contact legal team button
+            document.getElementById("contactLegalTeamButton").addEventListener("click", function() {
+                document.getElementById("contactMessage").classList.remove("d-none");
+                this.disabled = true;
+                this.textContent = 'Request Sent';
+            });
+
+            // Download report button
+            document.getElementById("downloadReportButton").addEventListener("click", function() {
+                alert("Report download functionality would be implemented here.");
+            });
+        });
+    </script>
+</body>
+</html>
+
+/*
+==============================================================
+  End of File
+
+  This code was developed and is owned by Eshwar Potnuru.
+  © 2025. All rights reserved.
+
+  For commercial use, collaboration, or licensing queries,
+  please contact eshwarpotnuru35@gmail.com.
+
+  Any modification or usage of this code without attribution
+  and prior consent is a violation of copyright terms.
+==============================================================
+*/

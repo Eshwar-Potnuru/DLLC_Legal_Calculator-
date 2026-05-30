@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>AI Assistant Function Test</h1>
+    
+    <div id="testResults">
+        <h2>Test Results:</h2>
+        <div id="results"></div>
+    </div>
+    
+    <button onclick="testOpenAIChat()">Test AI Assistant Function</button>
+    <button onclick="testOpenCalculator()">Test Calculator Function</button>
+    
+    <script>
+        function addResult(test, status, message) {
+            const results = document.getElementById('results');
+            results.innerHTML += `<p class="${status}">${test}: ${message}</p>`;
+        }
+        
+        function testOpenAIChat() {
+            try {
+                if (typeof openAIChat === 'function') {
+                    addResult('openAIChat', 'success', 'Function exists ✅');
+                    // Test if modal exists
+                    const modal = document.getElementById('aiChatModal');
+                    if (modal) {
+                        addResult('AI Modal', 'success', 'Modal element found ✅');
+                    } else {
+                        addResult('AI Modal', 'error', 'Modal element NOT found ❌');
+                    }
+                } else {
+                    addResult('openAIChat', 'error', 'Function does NOT exist ❌');
+                }
+            } catch (error) {
+                addResult('openAIChat', 'error', 'Error: ' + error.message + ' ❌');
+            }
+        }
+        
+        function testOpenCalculator() {
+            try {
+                if (typeof openCalculator === 'function') {
+                    addResult('openCalculator', 'success', 'Function exists ✅');
+                    // Test if modal exists
+                    const modal = document.getElementById('calculatorModal');
+                    if (modal) {
+                        addResult('Calculator Modal', 'success', 'Modal element found ✅');
+                    } else {
+                        addResult('Calculator Modal', 'error', 'Modal element NOT found ❌');
+                    }
+                } else {
+                    addResult('openCalculator', 'error', 'Function does NOT exist ❌');
+                }
+            } catch (error) {
+                addResult('openCalculator', 'error', 'Error: ' + error.message + ' ❌');
+            }
+        }
+        
+        // Auto-test on load
+        window.addEventListener('load', function() {
+            addResult('Page Load', 'success', 'Test page loaded successfully ✅');
+            setTimeout(() => {
+                testOpenAIChat();
+                testOpenCalculator();
+            }, 1000);
+        });
+    </script>
+    
+    <!-- Include the actual scripts from the main project -->
+    <script src="js/config.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/ai-analysis.js"></script>
+    <script src="js/ui-manager.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Include the modals from the main HTML (simplified) -->
+    <div class="modal-overlay" id="calculatorModal" style="display: none;">
+        <p>Calculator Modal Placeholder</p>
+    </div>
+    
+    <div class="modal-overlay" id="aiChatModal" style="display: none;">
+        <div id="chatMessages"></div>
+        <p>AI Chat Modal Placeholder</p>
+    </div>
+</body>
+</html>

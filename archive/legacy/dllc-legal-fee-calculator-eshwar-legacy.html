@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Fee Estimator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6b0202; /* Vibrant red */
+            --secondary-color: #333333; /* Dark gray */
+            --accent-color: #ff5252; /* Lighter red */
+            --light-bg: #fff0f0; /* Light background */
+            --dark-text: #222222; /* Almost black */
+            --light-text: #666666; /* Medium gray */
+            --card-bg: #fcfafa; /* Pure white for cards */
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Roboto', sans-serif;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+		
+		.container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .btn-trigger {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(209, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .btn-trigger:hover {
+            background-color: #b00000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(209, 0, 0, 0.4);
+        }
+        
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 2rem;
+            background-color: var(--light-bg);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            background-color: var(--card-bg);
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-text);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(209, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 24px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #b00000;
+            transform: translateY(-2px);
+        }
+        
+        .alert-info {
+            background-color: #f8f0f0; /* Light red background */
+            border-color: #e0c0c0;
+            color: #a00000;
+        }
+        
+        .alert-success {
+            background-color: #f0f8f0;
+            border-color: #c0e0c0;
+            color: #00a000;
+        }
+        
+        .summary-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .fee-display {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .voucher-preview {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: var(--primary-color);
+        }
+        
+        hr {
+            border-top: 1px solid rgba(209, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .btn-trigger {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+            
+            .modal-header {
+                padding: 1.25rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Trigger Button -->
+    <button class="btn-trigger" data-bs-toggle="modal" data-bs-target="#feeEstimatorModal">
+        Calculate Legal Fees
+    </button>
+
+    <!-- Main Modal -->
+    <div class="modal fade" id="feeEstimatorModal" tabindex="-1" aria-labelledby="feeEstimatorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="feeEstimatorModalLabel">Legal Fee Estimator</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="feeEstimatorForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-4">Personal Information</h5>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+65</span>
+                                        <input type="tel" class="form-control" id="phone" pattern="[0-9]{8}" placeholder="Enter 8-digit number" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-4">Transaction Details</h5>
+                                <div class="mb-3">
+                                    <label for="purpose" class="form-label">Transaction Type</label>
+                                    <select class="form-select" id="purpose" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="Buy">Buy</option>
+                                        <option value="Sell">Sell</option>
+                                        <option value="Mortgage">Mortgage</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="propertyType" class="form-label">Property Type</label>
+                                    <select class="form-select" id="propertyType" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="HDB">HDB</option>
+                                        <option value="Private">Private</option>
+                                        <option value="Commercial">Commercial</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 d-none" id="paymentTypeOptions">
+                                    <label for="paymentType" class="form-label">Payment Method</label>
+                                    <select class="form-select" id="paymentType" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-4">Ownership Details</h5>
+                                <div class="mb-3">
+                                    <label for="ownership" class="form-label">Ownership Type</label>
+                                    <select class="form-select" id="ownership" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="Single">Single Owner</option>
+                                        <option value="Joint">Joint Owners</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 d-none" id="singleOwnerOptions">
+                                    <label for="singleOwnerType" class="form-label">Owner Type</label>
+                                    <select class="form-select" id="singleOwnerType">
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="Individual">Individual</option>
+                                        <option value="Company">Company</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 d-none" id="companyNameField">
+                                    <label for="companyName" class="form-label">Company Name</label>
+                                    <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
+                                </div>
+                                
+                                <div class="mb-3 d-none" id="jointOwnerOptions">
+                                    <label for="jointOwnerType" class="form-label">Joint Owner Type</label>
+                                    <select class="form-select" id="jointOwnerType">
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="Husband & Wife">Husband & Wife</option>
+                                        <option value="Two Individuals">Two Individuals</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-4">Financial Details</h5>
+                                <div class="mb-3">
+                                    <label for="bank" class="form-label">Bank</label>
+                                    <select class="form-select" id="bank" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="DBS">DBS</option>
+                                        <option value="OCBC">OCBC</option>
+                                        <option value="UOB">UOB</option>
+                                        <option value="Other">Other Bank</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 d-none" id="customBankField">
+                                    <label for="customBankName" class="form-label">Bank Name</label>
+                                    <input type="text" class="form-control" id="customBankName" placeholder="Enter bank name">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="transactionValue" class="form-label">Transaction Value (SGD)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="transactionValue" min="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="mb-4">
+                            <h5>Promotions</h5>
+                            <div id="promo-banner" class="alert alert-info mb-3">
+                                Use voucher code <strong>WELCOME15</strong> for 15% off your first transaction!
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="voucherCode" class="form-label">Voucher Code</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="voucherCode" placeholder="Enter voucher code">
+                                    <button type="button" class="btn btn-outline-primary" id="applyVoucher">Apply</button>
+                                </div>
+                                <div id="voucherMessage" class="mt-2 small"></div>
+                                
+                                <input type="hidden" id="validVoucher" value="">
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Calculate Fees
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Fee Estimation Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        Thank you for your inquiry! Here's your fee estimation.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="summary-item">
+                                <h6>Personal Information</h6>
+                                <p><strong>Name:</strong> <span id="summaryName"></span></p>
+                                <p><strong>Email:</strong> <span id="summaryEmail"></span></p>
+                                <p><strong>Phone:</strong> <span id="summaryPhone"></span></p>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <h6>Transaction Details</h6>
+                                <p><strong>Type:</strong> <span id="summaryPurpose"></span></p>
+                                <p><strong>Property:</strong> <span id="summaryPropertyType"></span></p>
+                                <p><strong>Payment:</strong> <span id="summaryPaymentType"></span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="summary-item">
+                                <h6>Ownership Details</h6>
+                                <p><strong>Ownership:</strong> <span id="summaryOwnership"></span></p>
+                                <p><strong>Bank:</strong> <span id="summaryBank"></span></p>
+                                <p><strong>Value:</strong> SGD <span id="summaryTransactionValue"></span></p>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <h6>Estimated Legal Fee</h6>
+                                <div class="fee-display">SGD <span id="summaryFee"></span></div>
+                                <small class="text-muted">Includes GST and is subject to final verification</small>
+                                
+                                <div id="discountDetails" class="mt-3 d-none">
+                                    <p class="text-success"><strong>Discount Applied:</strong> SGD <span id="voucherDiscount"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <p><strong>Estimated on:</strong> <span id="summaryCurrentDateTime"></span></p>
+                    </div>
+                    
+                    <div id="contactMessage" class="d-none mt-4">
+                        <div class="alert alert-info">
+                            <h6>Thank you for your inquiry!</h6>
+                            <p>Next Steps, Our legal team will review your information and reach out to you shortly to discuss your case in detail. If you have any immediate questions, feel free to contact us at <strong>[eshwarpotnuru35@gmail.com / +65 80585329]</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="contactLegalTeamButton">
+                        Contact Legal Team
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show additional questions based on ownership type
+            document.getElementById("ownership").addEventListener("change", function() {
+                const ownershipValue = this.value;
+                document.getElementById("singleOwnerOptions").classList.add("d-none");
+                document.getElementById("jointOwnerOptions").classList.add("d-none");
+                document.getElementById("companyNameField").classList.add("d-none");
+                
+                if (ownershipValue === "Single") {
+                    document.getElementById("singleOwnerOptions").classList.remove("d-none");
+                } else if (ownershipValue === "Joint") {
+                    document.getElementById("jointOwnerOptions").classList.remove("d-none");
+                }
+            });
+            
+            // Show company name field when Company is selected
+            document.getElementById("singleOwnerType").addEventListener("change", function() {
+                if (this.value === "Company") {
+                    document.getElementById("companyNameField").classList.remove("d-none");
+                    document.getElementById("companyName").required = true;
+                } else {
+                    document.getElementById("companyNameField").classList.add("d-none");
+                    document.getElementById("companyName").required = false;
+                    document.getElementById("companyName").value = "";
+                }
+            });
+            
+            // Show custom bank field when Other is selected
+            document.getElementById("bank").addEventListener("change", function() {
+                if (this.value === "Other") {
+                    document.getElementById("customBankField").classList.remove("d-none");
+                    document.getElementById("customBankName").required = true;
+                } else {
+                    document.getElementById("customBankField").classList.add("d-none");
+                    document.getElementById("customBankName").required = false;
+                    document.getElementById("customBankName").value = "";
+                }
+            });
+            
+            // Show payment type options based on property type
+            document.getElementById("propertyType").addEventListener("change", function() {
+                const propertyType = this.value;
+                const paymentTypeSelect = document.getElementById("paymentType");
+                
+                paymentTypeSelect.innerHTML = '<option value="" disabled selected>Select payment method</option>';
+                
+                if (propertyType === "HDB" || propertyType === "Private") {
+                    paymentTypeSelect.innerHTML += 
+                        '<option value="Cash">Cash</option>' +
+                        '<option value="Loan">Loan</option>' +
+                        '<option value="CPF">CPF</option>';
+                } else if (propertyType === "Commercial") {
+                    paymentTypeSelect.innerHTML += '<option value="CPF">CPF</option>';
+                }
+                
+                document.getElementById("paymentTypeOptions").classList.remove("d-none");
+            });
+            
+            // Voucher system with 10 random codes
+            const vouchers = {
+                'WELCOME15': { type: 'percentage', value: 0.15, name: '15% Legal Discount' },
+				'X9K4L-MP72Q': { type: 'percentage', value: 0.15, name: 'Flash Sale' },
+				'3RFT8-BN45Y': { type: 'fixed', value: 100, name: 'Loyalty Bonus' },
+				'QZ12K-9PLM6': { type: 'percentage', value: 0.20, name: 'Premium Client Offer' },
+				'7HJW3-DV8KQ': { type: 'fixed', value: 75, name: 'Quick Deal' },
+				'LK54P-2XM9N': { type: 'percentage', value: 0.10, name: 'Seasonal Discount' },
+				'9TGB6-YH71C': { type: 'fixed', value: 150, name: 'Elite Savings' },
+				'P4M2K-R9LZ8': { type: 'percentage', value: 0.25, name: 'Exclusive Rate' },
+				'6FV5D-W3XQ9': { type: 'fixed', value: 50, name: 'Starter Pack' },
+				'Z8K2J-N7B4V': { type: 'percentage', value: 0.30, name: 'VIP Special' },
+				'M3Q9L-K5P8X': { type: 'fixed', value: 200, name: 'Platinum Discount' },
+				'2YH7C-R9T4W': { type: 'percentage', value: 0.18, name: 'Limited Offer' },
+				'B8N3M-L6K9P': { type: 'fixed', value: 125, name: 'Gold Tier' },
+				'K7J2D-F5V8Q': { type: 'percentage', value: 0.12, name: 'Weekend Deal' },
+				'4X9P3-Z6M8Y': { type: 'fixed', value: 90, name: 'Silver Package' },
+				'D5F8K-J3R7L': { type: 'percentage', value: 0.22, name: 'Priority Client' },
+				'W2K9N-M4B7V': { type: 'fixed', value: 175, name: 'Executive Bonus' },
+				'L8P3Q-K6M9X': { type: 'percentage', value: 0.28, name: 'Black Friday' },
+				'R7T2Y-N5K8B': { type: 'fixed', value: 60, name: 'Basic Savings' },
+				'V9M4L-P2Q8X': { type: 'percentage', value: 0.35, name: 'Anniversary Special' },
+				'N6B8V-K3M9L': { type: 'fixed', value: 250, name: 'Diamond Tier' },
+                'LAWYERVIP': { type: 'percentage', value: 0.30, name: 'VIP Client Rate' },
+                'PROP4SALE': { type: 'fixed', value: 200, name: 'High Value Discount' }
+            };
+
+            // Apply voucher functionality
+            document.getElementById("applyVoucher").addEventListener("click", function() {
+                const voucherCode = document.getElementById("voucherCode").value.trim().toUpperCase();
+                const voucherMessage = document.getElementById("voucherMessage");
+                
+                if (vouchers[voucherCode]) {
+                    voucherMessage.style.color = "#28a745";
+                    voucherMessage.textContent = `${vouchers[voucherCode].name} applied!`;
+                    document.getElementById("validVoucher").value = voucherCode;
+                    
+                    // Show voucher preview
+                    const discountValue = vouchers[voucherCode].type === 'percentage' 
+                        ? `${vouchers[voucherCode].value*100}%` 
+                        : `SGD ${vouchers[voucherCode].value}`;
+                    document.getElementById("voucherPreview").textContent = `Discount: ${discountValue}`;
+                    document.getElementById("voucherPreview").style.display = "block";
+                } else {
+                    voucherMessage.style.color = "#dc3545";
+                    voucherMessage.textContent = "Invalid voucher code";
+                    document.getElementById("validVoucher").value = "";
+                    document.getElementById("voucherPreview").style.display = "none";
+                }
+            });
+
+            /**
+				 * Calculates legal fees with Singapore GST (9%)
+				 * @param {number} transactionValue - Property value in SGD (must be positive)
+				 * @param {string} propertyType - "HDB", "Private", or "Commercial"
+				 * @param {string} purpose - "Buy", "Sell", or "Mortgage"
+				 * @param {string} ownershipType - "Single" or "Joint"
+				 * @returns {number} Final fee including 9% GST (rounded to 2 decimal places)
+				 * @throws {Error} If invalid inputs are provided
+				 */
+				function calculateLegalFees(transactionValue, propertyType, purpose, ownershipType) {
+					// ===== 1. VALIDATION =====
+					if (typeof transactionValue !== 'number' || transactionValue <= 0) {
+						throw new Error("Transaction value must be a positive number");
+					}
+
+					const validPropertyTypes = ["HDB", "Private", "Commercial"];
+					const validPurposes = ["Buy", "Sell", "Mortgage"];
+					const validOwnershipTypes = ["Single", "Joint"];
+
+					if (!validPropertyTypes.includes(propertyType)) {
+						throw new Error(`Invalid property type. Valid options: ${validPropertyTypes.join(', ')}`);
+					}
+					if (!validPurposes.includes(purpose)) {
+						throw new Error(`Invalid purpose. Valid options: ${validPurposes.join(', ')}`);
+					}
+					if (!validOwnershipTypes.includes(ownershipType)) {
+						throw new Error(`Invalid ownership type. Valid options: ${validOwnershipTypes.join(', ')}`);
+					}
+
+					// ===== 2. BASE FEE CALCULATION =====
+					const BASE_FEES = {
+						"HDB": 300,       // HDB base fee
+						"Private": 600,    // Private property base
+						"Commercial": 1000 // Commercial property base
+					};
+
+					let baseFee = BASE_FEES[propertyType];
+
+					// ===== 3. PURPOSE-BASED CALCULATION =====
+					const PURPOSE_RATES = {
+						"Buy": {
+							"HDB": 0.008,    // 0.8% for HDB purchase
+							"Private": 0.012, // 1.2% for private purchase
+							"Commercial": 0.015 // 1.5% for commercial
+						},
+						"Sell": {
+							"HDB": 0.005,     // 0.5% for HDB sale
+							"Private": 0.007,  // 0.7% for private sale
+							"Commercial": 0.01 // 1.0% for commercial
+						}
+					};
+
+					if (purpose === "Mortgage") {
+						baseFee *= 0.8; // 20% discount for mortgages
+					} else {
+						baseFee += transactionValue * PURPOSE_RATES[purpose][propertyType];
+					}
+
+					// ===== 4. OWNERSHIP SURCHARGES =====
+					const OWNERSHIP_FEES = {
+						"Joint": {
+							"Husband & Wife": 200,
+							"Two Individuals": 300
+						},
+						"Single": {
+							"Company": 400,
+							"Individual": 0
+						}
+					};
+
+					if (ownershipType === "Joint") {
+						const jointOwnerType = document.getElementById("jointOwnerType")?.value;
+						baseFee += OWNERSHIP_FEES.Joint[jointOwnerType] || 0;
+					} else {
+						const singleOwnerType = document.getElementById("singleOwnerType")?.value;
+						baseFee += OWNERSHIP_FEES.Single[singleOwnerType] || 0;
+					}
+
+					// ===== 5. GST CALCULATION (9%) =====
+					const GST_RATE = 0.09; // Singapore GST 9%
+					const gstAmount = baseFee * GST_RATE;
+					const finalFee = baseFee + gstAmount;
+
+					// ===== 6. RETURN ROUNDED VALUE =====
+					return Math.round(finalFee * 100) / 100; // Rounds to cents
+				}
+            
+            // Main form submission handler
+            document.getElementById("feeEstimatorForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const formData = {
+                    name: document.getElementById("name").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    phone: document.getElementById("phone").value.trim(),
+                    purpose: document.getElementById("purpose").value,
+                    propertyType: document.getElementById("propertyType").value,
+                    paymentType: document.getElementById("paymentType").value,
+                    ownership: document.getElementById("ownership").value,
+                    bank: document.getElementById("bank").value,
+                    transactionValue: parseFloat(document.getElementById("transactionValue").value),
+                    voucherCode: document.getElementById("validVoucher").value
+                };
+
+                // Get conditional fields
+                if (formData.ownership === "Single") {
+                    formData.singleOwnerType = document.getElementById("singleOwnerType").value;
+                    if (formData.singleOwnerType === "Company") {
+                        formData.companyName = document.getElementById("companyName").value.trim();
+                    }
+                } else if (formData.ownership === "Joint") {
+                    formData.jointOwnerType = document.getElementById("jointOwnerType").value;
+                }
+                
+                if (formData.bank === "Other") {
+                    formData.customBankName = document.getElementById("customBankName").value.trim();
+                }
+
+                // Validate required fields
+                const requiredFields = ['name', 'email', 'phone', 'purpose', 'propertyType', 'paymentType', 'ownership', 'bank', 'transactionValue'];
+                for (const field of requiredFields) {
+                    if (!formData[field]) {
+                        alert(`Please fill out the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} field.`);
+                        return;
+                    }
+                }
+                
+                // Validate phone number
+                if (!/^\d{8}$/.test(formData.phone)) {
+                    alert("Please enter a valid 8-digit Singapore phone number");
+                    return;
+                }
+                
+                // Validate transaction value
+                if (formData.transactionValue <= 0) {
+                    alert("Please enter a valid transaction value");
+                    return;
+                }
+                
+                // Calculate base fee
+                let baseFee = calculateLegalFees(
+                    formData.transactionValue,
+                    formData.propertyType,
+                    formData.purpose,
+                    formData.ownership
+                );
+                
+                let finalFee = baseFee;
+                let discount = 0;
+                
+                // Apply voucher discount if valid
+                if (formData.voucherCode && vouchers[formData.voucherCode]) {
+                    if (vouchers[formData.voucherCode].type === 'percentage') {
+                        discount = baseFee * vouchers[formData.voucherCode].value;
+                    } else {
+                        discount = vouchers[formData.voucherCode].value;
+                    }
+                    finalFee = Math.max(0, baseFee - discount);
+                }
+                
+                // Prepare summary data
+                const currentDateTime = new Date().toLocaleString("en-SG", {
+                    timeZone: "Asia/Singapore",
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                
+                // Build ownership summary
+                let ownershipSummary = formData.ownership;
+                if (formData.ownership === "Single") {
+                    ownershipSummary += ` (${formData.singleOwnerType}`;
+                    if (formData.singleOwnerType === "Company" && formData.companyName) {
+                        ownershipSummary += `: ${formData.companyName}`;
+                    }
+                    ownershipSummary += `)`;
+                } else if (formData.ownership === "Joint") {
+                    ownershipSummary += ` (${formData.jointOwnerType})`;
+                }
+                
+                // Format currency
+                const formatCurrency = (amount) => {
+                    return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                };
+                
+                // Update summary in result modal
+                document.getElementById("summaryName").textContent = formData.name;
+                document.getElementById("summaryEmail").textContent = formData.email;
+                document.getElementById("summaryPhone").textContent = `+65 ${formData.phone}`;
+                document.getElementById("summaryPurpose").textContent = formData.purpose;
+                document.getElementById("summaryPropertyType").textContent = formData.propertyType;
+                document.getElementById("summaryPaymentType").textContent = formData.paymentType;
+                document.getElementById("summaryOwnership").textContent = ownershipSummary;
+                document.getElementById("summaryBank").textContent = formData.bank === "Other" ? formData.customBankName : formData.bank;
+                document.getElementById("summaryTransactionValue").textContent = formatCurrency(formData.transactionValue);
+                document.getElementById("summaryCurrentDateTime").textContent = currentDateTime;
+                document.getElementById("summaryFee").textContent = formatCurrency(finalFee);
+                
+                // Show discount details if voucher was applied
+                if (discount > 0) {
+                    document.getElementById("discountDetails").classList.remove("d-none");
+                    document.getElementById("voucherDiscount").textContent = formatCurrency(discount);
+                } else {
+                    document.getElementById("discountDetails").classList.add("d-none");
+                }
+                
+                // Simulate sending email
+                const emailDetails = {
+                    to: [formData.email, "yourlawfirm@example.com"],
+                    subject: `Legal Fee Estimation Request - ${formData.name}`,
+                    body: `
+CLIENT DETAILS:
+-----------------------------
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: +65 ${formData.phone}
+
+TRANSACTION DETAILS:
+-----------------------------
+Purpose: ${formData.purpose}
+Property Type: ${formData.propertyType}
+Payment Type: ${formData.paymentType}
+Ownership: ${ownershipSummary}
+Bank: ${formData.bank === "Other" ? formData.customBankName : formData.bank}
+Transaction Value: SGD ${formatCurrency(formData.transactionValue)}
+
+FEE ESTIMATION:
+-----------------------------
+Base Legal Fee: SGD ${formatCurrency(baseFee)}
+${discount > 0 ? `Discount Applied: SGD ${formatCurrency(discount)}\n` : ''}
+Final Estimated Fee: SGD ${formatCurrency(finalFee)}
+
+Request Date: ${currentDateTime}
+
+MESSAGE:
+-----------------------------
+The client has requested a legal fee estimation through your online calculator.
+Please follow up within 24 hours.
+                    `.trim()
+                };
+                
+                // In production, replace this with actual email sending code
+                console.log("Email would be sent to:", emailDetails.to.join(", "));
+                console.log("Email subject:", emailDetails.subject);
+                console.log("Email body:", emailDetails.body);
+                
+                // Show result modal
+                const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+                resultModal.show();
+                
+                // Hide contact message initially
+                document.getElementById("contactMessage").classList.add("d-none");
+            });
+            
+            // Contact legal team button
+            document.getElementById("contactLegalTeamButton").addEventListener("click", function() {
+                document.getElementById("contactMessage").classList.remove("d-none");
+                this.disabled = true;
+                this.textContent = 'Request Sent';
+            });
+        });
+    </script>
+</body>
+</html>

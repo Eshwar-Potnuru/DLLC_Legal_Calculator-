@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <button onclick="testFunction()">Test Function</button>
+    
+    <script>
+        function testFunction() {
+            alert('Function works!');
+        }
+        
+        // Test if our AI functions are available
+        if (typeof openAIChat === 'function') {
+            console.log('openAIChat is available');
+        } else {
+            console.log('openAIChat is NOT available');
+        }
+    </script>
+</body>
+</html>
