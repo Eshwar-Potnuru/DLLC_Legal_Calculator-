@@ -7,8 +7,8 @@
 const CONFIG = {
     // OpenRouter API Configuration (routes to DeepSeek)
     API: {
-        OPENROUTER_KEY: '', // Add your OpenRouter key before running in production
-        OPENROUTER_URL: 'https://openrouter.ai/api/v1/chat/completions',
+        OPENROUTER_KEY: '', // Keep empty when using the secure Node proxy
+        OPENROUTER_URL: '/api/chat/completions',
         MODEL: 'deepseek/deepseek-chat',
         FALLBACK_MODELS: ['google/gemini-3.1-flash-lite', '~openai/gpt-mini-latest', 'openrouter/auto'],
         MAX_TOKENS: 2000,

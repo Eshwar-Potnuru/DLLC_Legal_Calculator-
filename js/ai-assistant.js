@@ -11,6 +11,7 @@ class AIAssistant {
         this.apiConfig = {
             key: CONFIG?.API?.OPENROUTER_KEY || '',
             url: CONFIG?.API?.OPENROUTER_URL || '',
+            usesServerProxy: String(CONFIG?.API?.OPENROUTER_URL || '').startsWith('/api/'),
             model: CONFIG?.API?.MODEL || 'deepseek/deepseek-chat',
             fallbackModels: Array.isArray(configuredFallback) ? configuredFallback : ['openrouter/auto'],
             temperature: CONFIG?.API?.TEMPERATURE ?? 0.7,
@@ -162,8 +163,16 @@ class AIAssistant {
     }
 
     async callAssistant(message, { includeContext = true } = {}) {
-        if (!this.apiConfig.key || !this.apiConfig.url) {
-            this.appendMessage('system', 'AI service is not configured. Please add your OpenRouter API key in <code>config.js</code>.', {
+        if (!this.apiConfig.url) {
+            this.appendMessage('system', 'AI service URL is not configured. Please update <code>config.js</code>.', {
+                isHtml: true,
+                showTime: false
+            });
+            return;
+        }
+
+        if (!this.apiConfig.usesServerProxy && !this.apiConfig.key) {
+            this.appendMessage('system', 'AI service key is missing. Add your OpenRouter API key in <code>config.js</code> or use the Node proxy endpoint.', {
                 isHtml: true,
                 showTime: false
             });
@@ -928,13 +937,18 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
             const timeoutId = setTimeout(() => controller.abort(), this.apiConfig.requestTimeoutMs);
 
             try {
+                const requestHeaders = {
+                    'Content-Type': 'application/json',
+                    'X-Title': 'DLLC-AI-Legal-Assistant'
+                };
+
+                if (this.apiConfig.key) {
+                    requestHeaders.Authorization = `Bearer ${this.apiConfig.key}`;
+                }
+
                 const response = await fetch(this.apiConfig.url, {
                     method: 'POST',
-                    headers: {
-                        Authorization: `Bearer ${this.apiConfig.key}`,
-                        'Content-Type': 'application/json',
-                        'X-Title': 'DLLC-AI-Legal-Assistant'
-                    },
+                    headers: requestHeaders,
                     body: JSON.stringify({
                         model,
                         messages,

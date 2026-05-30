@@ -155,15 +155,22 @@ DLLC/
 
 ### **Local Development**
 1. **Clone/Download**: Get the project files
-2. **Web Server**: Serve from a local web server (required for file uploads)
-3. **API Key**: Add your own OpenRouter API key in `js/config.js`
-4. **Browser**: Open `index.html` in a modern browser
+2. **Install Dependencies**: Run `npm install`
+3. **Environment File**: Copy `.env.example` to `.env` and set `OPENROUTER_API_KEY`
+4. **Start App**: Run `npm start`
+5. **Browser**: Open `http://localhost:3000`
+
+### **Secure API Key Architecture**
+- **Frontend**: Calls `/api/chat/completions` only (no secret in browser code)
+- **Backend**: `server.js` forwards requests to OpenRouter using `OPENROUTER_API_KEY`
+- **GitHub Safe**: `.env` is ignored by git; use `.env.example` as template
 
 ### **Production Deployment**
-1. **Minify Assets**: Minify CSS and JavaScript files
-2. **Optimize Images**: Compress any additional images
-3. **HTTPS**: Deploy with HTTPS for security
-4. **CDN**: Consider CDN for font and library assets
+1. **Platform**: Deploy as Node app on Render or Railway
+2. **Start Command**: `npm start`
+3. **Environment Variable**: Set `OPENROUTER_API_KEY` in platform settings
+4. **Optional Env**: Set `APP_BASE_URL` to your public app URL
+5. **HTTPS**: Keep HTTPS enabled (default on Render/Railway)
 
 ## 🔐 Security Considerations
 
