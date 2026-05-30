@@ -636,7 +636,7 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
         const isActive = doc.status === 'ready' || doc.status === 'fallback';
 
         return `
-            <div class="document-item ${isActive ? 'is-active' : ''}" data-doc-id="${doc.id}">
+            <div class="document-item ${isActive ? 'is-active' : ''} ${statusClass}" data-doc-id="${doc.id}">
                 <div class="document-name">
                     <i class="fas fa-file-alt"></i>
                     <span>${this.escapeHtml(doc.name)}</span>

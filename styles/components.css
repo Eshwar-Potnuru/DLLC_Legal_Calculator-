@@ -1400,6 +1400,7 @@
 .document-item {
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.18);
+    border-left: 3px solid transparent;
     border-radius: var(--radius-xl);
     padding: var(--spacing-4);
     display: flex;
@@ -1417,6 +1418,25 @@
 .document-item.is-active {
     border-color: rgba(208, 160, 70, 0.9);
     background: rgba(208, 160, 70, 0.25);
+}
+
+.document-item.status-processing {
+    border-left-color: rgba(255, 255, 255, 0.65);
+}
+
+.document-item.status-ready {
+    border-left-color: rgba(110, 224, 136, 0.95);
+    background: linear-gradient(160deg, rgba(66, 140, 89, 0.22), rgba(255, 255, 255, 0.1));
+}
+
+.document-item.status-fallback {
+    border-left-color: rgba(247, 198, 80, 0.95);
+    background: linear-gradient(160deg, rgba(184, 133, 22, 0.24), rgba(255, 255, 255, 0.1));
+}
+
+.document-item.status-error {
+    border-left-color: rgba(255, 136, 136, 0.95);
+    background: linear-gradient(160deg, rgba(170, 68, 68, 0.25), rgba(255, 255, 255, 0.09));
 }
 
 .document-name {
@@ -1446,10 +1466,20 @@
     gap: 6px;
     padding: 4px 10px;
     border-radius: var(--radius-full);
-    font-size: var(--font-size-xs);
+    font-size: 0.68rem;
     font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.status-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.92;
 }
 
 .status-processing {
@@ -1851,24 +1881,46 @@
 }
 
 .analysis-card {
-    background: var(--color-white);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(165deg, #ffffff, #f6fbff);
     border: 1px solid rgba(17, 36, 51, 0.12);
     border-left: 4px solid #1b6486;
     border-radius: var(--radius-xl);
-    padding: var(--spacing-4);
+    padding: var(--spacing-5);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-3);
+    gap: var(--spacing-4);
     color: #24333d;
+    box-shadow: 0 8px 22px rgba(18, 44, 62, 0.08);
+}
+
+.analysis-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 38%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(27, 100, 134, 0), rgba(27, 100, 134, 0.45));
 }
 
 .analysis-card h4 {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--spacing-2);
     margin: 0;
-    font-size: var(--font-size-lg);
+    font-size: 1.02rem;
+    letter-spacing: 0.01em;
     color: #1c5673;
+}
+
+.analysis-card p {
+    margin: 0;
+    color: #2b3f4b;
+    font-size: 0.92rem;
+    line-height: 1.65;
 }
 
 .analysis-grid {
@@ -1889,13 +1941,16 @@
 .analysis-card ul {
     margin: 0;
     padding-left: var(--spacing-5);
+    display: grid;
+    gap: 8px;
 }
 
 .analysis-card li {
-    margin-bottom: var(--spacing-2);
     position: relative;
     list-style: none;
     padding-left: var(--spacing-4);
+    color: #304452;
+    line-height: 1.55;
 }
 
 .analysis-card li::before {
@@ -1912,8 +1967,9 @@
 }
 
 .analysis-card pre {
-    background: var(--color-gray-50);
+    background: #f3f8fc;
     border-radius: var(--radius-lg);
+    border: 1px solid rgba(17, 36, 51, 0.09);
     padding: var(--spacing-3);
     margin: 0;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
@@ -1926,16 +1982,17 @@
 
 .analysis-raw {
     margin-top: var(--spacing-2);
-    border: 1px solid var(--color-gray-200);
+    border: 1px solid rgba(17, 36, 51, 0.12);
     border-radius: var(--radius-lg);
-    background: var(--color-gray-50);
+    background: #f7fafc;
     padding: var(--spacing-2) var(--spacing-3);
 }
 
 .analysis-raw summary {
     cursor: pointer;
     font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
+    color: #215f7c;
+    font-size: 0.86rem;
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
@@ -1960,15 +2017,16 @@
 }
 
 .probability-meter {
-    background: var(--color-gray-200);
+    background: #e6eef3;
     border-radius: 12px;
     height: 20px;
     overflow: hidden;
+    border: 1px solid rgba(17, 36, 51, 0.08);
 }
 
 .probability-bar {
     height: 100%;
-    background: linear-gradient(90deg, #4caf50, var(--color-gold));
+    background: linear-gradient(90deg, #2da56a, #59be86, var(--color-gold));
     border-radius: inherit;
     transition: width 1s ease-out;
 }
@@ -2157,6 +2215,15 @@
 
     .chat-messages {
         padding: var(--spacing-4);
+    }
+
+    .analysis-card {
+        padding: var(--spacing-4);
+        gap: var(--spacing-3);
+    }
+
+    .analysis-card h4 {
+        font-size: 0.95rem;
     }
 
     .chat-title h3 {
