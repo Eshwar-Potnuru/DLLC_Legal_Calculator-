@@ -731,18 +731,18 @@
         <div class="chat-modal-container" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
             <aside class="chat-sidebar" id="aiChatSidebar">
                 <div class="chat-sidebar-header">
-                    <h3 id="aiChatTitle">Case Files</h3>
-                    <p>Upload supporting documents for instant AI analysis.</p>
+                    <h3 id="aiChatTitle">Case Documents</h3>
+                    <p>Upload relevant reports and records to improve case guidance quality.</p>
                     <button type="button" class="btn-secondary" id="aiChatUploadButton">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        Upload Files
+                        Add Documents
                     </button>
                     <input type="file" id="aiChatFileInput" class="visually-hidden" multiple accept=".pdf,.docx,.txt,.jpg,.jpeg,.png">
                 </div>
                 <div class="chat-dropzone" id="aiChatUploadZone">
                     <i class="fas fa-file-import"></i>
-                    <p>Drag &amp; drop PDF, DOCX, TXT, or image files</p>
-                    <span>Maximum 10MB per file</span>
+                    <p>Drag and drop PDF, DOCX, TXT, or image files</p>
+                    <span>Up to 10 files, 10MB each</span>
                 </div>
                 <div class="chat-document-list" id="aiChatDocumentList" aria-live="polite"></div>
             </aside>
@@ -754,7 +754,7 @@
                         </span>
                         <div>
                             <h3>AI Legal Assistant</h3>
-                            <p>Specialist in Singapore accident claims</p>
+                            <p>Singapore accident claims advisor</p>
                         </div>
                     </div>
                     <button class="icon-button" type="button" id="aiChatCloseButton" aria-label="Close AI assistant">
@@ -765,25 +765,25 @@
                 <div class="chat-quick-actions" id="aiChatQuickActions">
                     <button type="button" class="chip-action" data-action="guide">
                         <i class="fas fa-lightbulb"></i>
-                        How does this work?
+                        How it works
                     </button>
                     <button type="button" class="chip-action" data-action="upload">
                         <i class="fas fa-file-upload"></i>
-                        Upload another document
+                        Add documents
                     </button>
                     <button type="button" class="chip-action" data-action="suggest">
                         <i class="fas fa-comments"></i>
-                        Suggested questions
+                        Sample questions
                     </button>
                 </div>
                 <div class="chat-input-bar">
-                    <textarea id="aiChatInput" placeholder="Describe your accident or ask a question…" rows="1"></textarea>
+                    <textarea id="aiChatInput" placeholder="Ask about liability, evidence, compensation range, or next legal steps..." rows="1"></textarea>
                     <div class="chat-actions">
                         <button type="button" class="icon-button" id="aiChatAttachButton" aria-label="Attach document">
                             <i class="fas fa-paperclip"></i>
                         </button>
                         <button type="button" class="btn-primary" id="aiChatSendButton">
-                            <span>Send</span>
+                            <span>Send message</span>
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>

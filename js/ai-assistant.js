@@ -125,8 +125,8 @@ class AIAssistant {
     addWelcomeMessage() {
         const content = `
             <p><strong>Welcome to the AI Legal Assistant.</strong></p>
-            <p>I can analyse accident reports, medical summaries, police statements, and insurance correspondence to help you understand potential coverage in Singapore.</p>
-            <p>Upload your documents on the left or ask a question to get started.</p>
+            <p>I can review accident reports, medical records, police statements, and insurer correspondence to help you assess potential claim strength in Singapore.</p>
+            <p>Upload case documents first, then ask specific questions for clearer guidance.</p>
         `;
 
         this.appendMessage('ai', content, {
@@ -594,8 +594,8 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
         if (!this.documents.length) {
             container.innerHTML = `
                 <div class="chat-document-empty">
-                    <p>No supporting documents uploaded yet.</p>
-                    <p>Add PDF, DOCX, TXT, or image files to enrich the AI analysis.</p>
+                    <p>No documents uploaded yet.</p>
+                    <p>Add PDF, DOCX, TXT, JPG, or PNG files to improve analysis depth.</p>
                 </div>
             `;
             return;
@@ -658,7 +658,7 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
 
         switch (action) {
             case 'guide':
-                this.submitPrompt('Please explain how you can assist me with accident claims and what information you need.', { echoUser: true });
+                this.submitPrompt('Please explain how you assist with Singapore accident claims and what information is most useful for accurate guidance.', { echoUser: true });
                 break;
             case 'upload':
                 this.elements.fileInput?.click();
@@ -667,9 +667,9 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
                 this.appendMessage('system', `
                     <p>Try asking:</p>
                     <ul>
-                        <li>What compensation range can I expect for my injuries?</li>
-                        <li>What evidence should I collect to strengthen my claim?</li>
-                        <li>How does partial fault affect my case in Singapore?</li>
+                        <li>Based on my documents, what are the strongest liability points?</li>
+                        <li>Which missing documents should I collect before consulting a lawyer?</li>
+                        <li>How could contributory negligence reduce potential compensation?</li>
                     </ul>
                 `, { isHtml: true, showTime: false });
                 break;
@@ -1151,13 +1151,13 @@ Extracted text (truncated to 4k characters):\n${truncated}`;
     formatDocumentStatus(status) {
         switch (status) {
             case 'processing':
-                return 'Analysing…';
+                return 'Analyzing';
             case 'ready':
-                return 'Analysis ready';
+                return 'Ready';
             case 'fallback':
-                return 'Fallback summary';
+                return 'Fallback';
             case 'error':
-                return 'Analysis failed';
+                return 'Failed';
             default:
                 return status;
         }
