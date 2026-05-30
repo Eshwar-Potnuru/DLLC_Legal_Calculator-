@@ -4,6 +4,11 @@
    =================================================================== */
 
 /* Modal System */
+html.ai-chat-open,
+body.ai-chat-open {
+    overflow: hidden !important;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1851,8 +1856,14 @@
     overflow-wrap: anywhere;
     word-break: break-word;
     touch-action: pan-y;
+    -ms-overflow-style: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     background: #f8fbfd;
+}
+
+#aiChatInput::-webkit-scrollbar {
+    width: 0;
+    height: 0;
 }
 
 #aiChatInput:focus {

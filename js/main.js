@@ -732,6 +732,9 @@ function openAIChat() {
     }, 10);
 
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.classList.add('ai-chat-open');
+    document.documentElement.classList.add('ai-chat-open');
 
     // Close on backdrop click (only wire once)
     if (!modal._backdropWired) {
@@ -760,6 +763,9 @@ function closeAIChat() {
     setTimeout(() => {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = '';
+        document.body.classList.remove('ai-chat-open');
+        document.documentElement.classList.remove('ai-chat-open');
     }, 300);
 }
 
