@@ -1827,6 +1827,7 @@
     display: flex;
     align-items: flex-end;
     gap: var(--spacing-3);
+    overflow-x: hidden;
 }
 
 #aiChatInput {
@@ -1840,6 +1841,12 @@
     font-size: 0.94rem;
     resize: none;
     color: var(--color-gray-800);
+    overflow-x: hidden;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    touch-action: pan-y;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     background: #f8fbfd;
 }
